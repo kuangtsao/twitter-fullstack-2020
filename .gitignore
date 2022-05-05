@@ -88,3 +88,7 @@ typings/
 
 # workspace setting
 .vscode/
+
+# ignore temp directory
+temp/
+upload/

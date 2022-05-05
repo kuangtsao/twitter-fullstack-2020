@@ -3,6 +3,8 @@ const helpers = require('./_helpers')
 const handlebars = require('express-handlebars')
 const methodOverride = require('method-override')
 
+const routes = require('./routes')
+
 const app = express()
 const port = 3000
 
@@ -16,7 +18,7 @@ app.use(express.urlencoded({ extend: true }))
 
 app.use(methodOverride('_method'))
 
-app.get('/', (req, res) => res.render('index'))
+app.use(routes)
 app.listen(port, () => console.log(`alphitter listening on port ${port}!`))
 
 module.exports = app

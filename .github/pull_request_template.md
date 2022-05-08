@@ -11,6 +11,6 @@
 ##### 更動檔案 :
 - config/passport : 增加角色權限(前後台帳號不可戶登)
 - routes/index : 增加註冊&tweets頁
--views/messages: 增加錯誤資訊
+- views/messages: 增加錯誤資訊
 
 - 其他沒有寫在上面，覺得應該寫在 Pull request 給覆核人看的事項

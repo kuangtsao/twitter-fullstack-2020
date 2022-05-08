@@ -1,6 +1,6 @@
 const express = require('express')
 const router = express.Router()
-const { authenticated, authenticatedAdmin } = require('../middleware/auth')
+const { authenticated } = require('../middleware/auth')
 const { generalErrorHandler } = require('../middleware/error-handler')
 const passport = require('../config/passport')
 const userController = require('../controller/userController')

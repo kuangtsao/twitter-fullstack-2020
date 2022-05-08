@@ -1,27 +1,26 @@
-<form class="form-signin" action="/signup" method="POST" style="width: 100%;">
+<form class="form-signin" action="/signup" method="POST">
   <div class="text-center mb-4">
-    <h1 class="h3 mb-3 font-weight-normal">Sign Up</h1>
+    <h1 class="h3 mb-3 font-weight-normal font-weight-bold">建立你的帳號</h1>
   </div>
-  <div class="form-label-group">
-    <label for="inputName">Name</label>
-    <input type="text" name="name" class="form-control" placeholder="Name" required autofocus />
+  <div class="form-label-group py-3">
+    <input type="text" name="account" class="form-control font-weight-bold" placeholder="帳號" required autofocus>
   </div>
-  <div class="form-label-group">
-    <label for="inputEmail">Email</label>
-    <input type="text" name="email" class="form-control" placeholder="Email" required autofocus />
+  <div class="form-label-group py-3">
+    <input type="text" name="name" class="form-control font-weight-bold" placeholder="名稱" required autofocus>
   </div>
-  <div class="form-label-group">
-    <label for="inputPassword">Password</label>
-    <input type="password" name="password" class="form-control" placeholder="Password" required />
+  <div class="form-label-group py-3">
+    <input type="text" name="email" class="form-control font-weight-bold" placeholder="Email" required autofocus>
   </div>
-  <div class="form-label-group">
-    <label for="inputPasswordCheck">Password Check</label>
-    <input type="password" name="passwordCheck" class="form-control" placeholder="Password Check" required />
+  <div class="form-label-group py-3">
+    <input type="password" name="password" class="form-control font-weight-bold" placeholder="密碼" required>
+  </div>
+  <div class="form-label-group py-3">
+    <input type="password" name="passwordCheck" class="form-control font-weight-bold" placeholder="密碼確認" required>
   </div>
   <br />
-  <button class="btn btn-lg btn-primary btn-block" type="submit">Submit</button>
-  <div class="text-center mb-4">
-    <p><a href="/signin">Sign In</a></p>
+  <div class="mb-4 text-center">
+    <button class="btn btn-block text-light font-weight-bold mb-3" style="border-radius: 40px; background-color:#FF6600"
+      type="submit">註冊</button>
+    <p><a class="font-weight-bold mb-3" href="/signin">取消</a></p>
   </div>
-  <p class="mt-5 mb-3 text-muted text-center">© 2017-2018</p>
 </form>

@@ -1,46 +1,50 @@
 const bcrypt = require('bcrypt-nodejs')
 const db = require('../models')
 const User = db.User
+const { Op } = require('sequelize')
 
 const userController = {
   signUpPage: (req, res) => {
     return res.render('signup')
   },
   signUp: (req, res) => {
-    if (req.body.passwordCheck !== req.body.password) {
-      req.flash('error_messages', '兩次密碼輸入不同！')
-      return res.redirect('/signup')
-    } else {
-      User.findOne({ where: { email: req.body.email } }).then(user => {
-        if (user) {
-          req.flash('error_messages', '信箱重複！')
-          return res.redirect('/signup')
+    const { account, name, email, password, checkPassword } = req.body
+    const errors = []
+    User.findOne({
+      where: {
+        [Op.or]: [{ account }, { email }]
+      }
+    }).then(user => {
+      if (user) {
+        if (user.account === account) {
+          errors.push({ message: '帳號已重覆註冊！' })
         } else {
-          User.findOne({ where: { account: req.body.account } }).then(user => {
-            if (user) {
-              req.flash('error_messages', '帳號重複！')
-              return res.redirect('/signup')
-            } else {
-              User.create({
-                account: req.body.account,
-                name: req.body.name,
-                avatar:
-                  'https://i.pinimg.com/474x/ff/4f/c3/ff4fc37f314916957e1103a2035a11fa.jpg',
-                email: req.body.email,
-                password: bcrypt.hashSync(
-                  req.body.password,
-                  bcrypt.genSaltSync(10),
-                  null
-                )
-              }).then(user => {
-                req.flash('success_messages', '成功註冊帳號！')
-                return res.redirect('/signin')
-              })
-            }
-          })
+          errors.push({ message: 'Email已重覆註冊!' })
         }
-      })
-    }
+        return res.render('signup', {
+          errors,
+          account,
+          name,
+          email,
+          password,
+          checkPassword
+        })
+      } else {
+        req.flash('success_messages', '註冊成功!')
+        return User.create({
+          account,
+          name,
+          email,
+          password: bcrypt.hashSync(
+            req.body.password,
+            bcrypt.genSaltSync(10),
+            null
+          )
+        }).then(user => {
+          res.redirect('/signin')
+        })
+      }
+    })
   },
   signInPage: (req, res) => {
     res.render('signin')

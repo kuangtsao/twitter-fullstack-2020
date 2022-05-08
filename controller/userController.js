@@ -1,6 +1,5 @@
-const bcrypt = require('bcrypt-nodejs')
-const db = require('../models')
-const User = db.User
+const bcrypt = require('bcryptjs')
+const { Tweet, User, Like, Reply } = require('../models')
 const { Op } = require('sequelize')
 
 const userController = {

@@ -2,7 +2,7 @@
   <nav class="navbar navbar-expand-lg navbar-light bg-light">
     首頁
   </nav>
-  <img src="{{user.avatar}}" alt="user-picture" class="rounded-circle">
+  <img src="{{ user.avatar }}" alt="user-picture" class="rounded-circle">
   <form action="/tweets" id="tweets" method="post">
     <div>
       <textarea name="comment" id="tweet-content" rows="5" class="form-control" placeholder="有什麼新鮮事？"
@@ -13,8 +13,8 @@
 </div>
 {{#each tweets}}
 <blockquote class="blockquote mb-0">
-  <img src="{{this.User.avatar}}" alt="user-picture" class="rounded-circle">
-  <span><a href="/users/{{this.UserId}}">{{ this.User.name }}</a></span>
+  <img src="{{ this.User.avatar }}" alt="user-picture" class="rounded-circle">
+  <span><a href="/users/{{ this.UserId }}">{{ this.User.name }}</a></span>
   <span class="blockquote-footer"> @{{ this.User.account }}</span>
   <span>{{ relativeTimeFromNow this.createdAt }}</span>
   <p>{{ this.description }}</p>

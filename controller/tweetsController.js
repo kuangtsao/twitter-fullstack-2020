@@ -1,16 +1,19 @@
-const { Tweet, User, Like, Reply } = require('../models')
+const { Tweet, User } = require('../models')
 
 const tweetsController = {
   getTweets: async (req, res, next) => {
     console.log(res.locals.user)
     // 載入所有的 tweets (這裡先 query)
+    // TODO: like 與 replies 數量
     try {
       const tweets = await Tweet.findAll({
-        include: User,
+        include: {
+          model: User,
+          attributes: ['name', 'account', 'avatar']
+        },
         raw: true,
         nest: true
       })
-      console.log(tweets)
       return res.render('index', { tweets })
     } catch (err) {
       next(err)

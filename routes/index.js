@@ -12,8 +12,9 @@ const adminController = require('../controller/adminController.js')
 // Admin
 router.get('/admin/signin', adminController.signinPage)
 router.post('/admin/signin', passport.authenticate('local', { failureRedirect: '/admin/signin', failureFlash: true }), adminController.signIn)
-router.get('/admin/tweets', authenticatedAdmin, adminController.getTweets)
 router.get('/logout', adminController.logout)
+router.get('/admin/tweets', authenticatedAdmin, adminController.getTweets)
+router.get('/admin/users', authenticatedAdmin, adminController.getUsers)
 
 // 使用者登入
 router.get('/signin', userController.signInPage)

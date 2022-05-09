@@ -1,6 +1,6 @@
-const bcrypt = require('bcryptjs')
-const { Tweet, User, Like, Reply } = require('../models')
-const { Op } = require('sequelize')
+// const bcrypt = require('bcryptjs')
+// const { Tweet, User, Like, Reply } = require('../models')
+// const { Op } = require('sequelize')
 
 const adminController = {
   signinPage: (req, res) => {
@@ -12,6 +12,9 @@ const adminController = {
   },
   getTweets: (req, res) => {
     return res.render('admin/tweets')
+  },
+  getUsers: (req, res) => {
+    return res.render('admin/users')
   },
   logout: (req, res) => {
     req.flash('success_messages', '登出成功！')

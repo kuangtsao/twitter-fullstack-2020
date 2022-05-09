@@ -1,6 +1,7 @@
 const tweetsController = {
   getTweets: (req, res) => {
-    return res.render('tweets')
+    console.log(res.locals.user)
+    return res.render('index')
   }
 }
 module.exports = tweetsController

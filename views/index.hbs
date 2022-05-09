@@ -11,5 +11,20 @@
     <button id="submit-btn" class="btn btn-primary">推文</button>
   </form>
 </div>
-
+{{#each tweets}}
+<blockquote class="blockquote mb-0">
+  <img src="{{this.User.avatar}}" alt="user-picture" class="rounded-circle">
+  <span><a href="/users/{{this.UserId}}">{{ this.User.name }}</a></span>
+  <span class="blockquote-footer"> @{{ this.User.account }}</span>
+  <span>{{ relativeTimeFromNow this.createdAt }}</span>
+  <p>{{ this.description }}</p>
+  <div>
+    <span><a href="/tweets/{{this.id}}/replies">回覆</a></span>
+    <span>回覆數量</span>
+    <span><a href="/like/{{this.id}}">喜歡</a></span>
+    <span>喜歡數量</span>
+  </div>  
+</blockquote>
+<hr />
+{{/each}}
 <a href="/logout"><button class="btn btn-outline-success my-2 my-sm-0">登出</button></a>

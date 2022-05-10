@@ -15,8 +15,6 @@ const tweetsController = {
         nest: true
       })
       const topUsers = await User.findAll({ raw: true })
-      console.log('--topUser--')
-      console.log(topUsers)
       return res.render('index', { tweets, topUsers })
     } catch (err) {
       next(err)

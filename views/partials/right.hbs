@@ -1,10 +1,10 @@
 <div class="col-md-3 offset-md-9">
   <h4>Popular</h4>
-    {{#each users}}
+    {{#each topUsers}}
     <blockquote class="blockquote mb-0">
-      <img src="{{ this.avatar }}" alt="user-picture" class="rounded-circle">
-      <span><a href="/users/{{ this.UserId }}">{{ this.User.name }}</a></span>
-      <span class="blockquote-footer"> @{{ this.User.account }}</span>
+      <img src="{{ this.avatar }}" alt="user-picture" class="rounded-circle" style="width: 32px; height: 32px;">
+      <span><a href="/users/{{ this.id }}">{{ this.name }}</a></span>
+      <span class="blockquote-footer"> @{{ this.account }}</span>
     </blockquote>
     <hr />
     {{/each}}

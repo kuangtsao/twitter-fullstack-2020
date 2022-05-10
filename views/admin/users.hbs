@@ -1,4 +1,46 @@
 <div id="column1" style="float:left; width:20%; position: fixed; top:15px; left:5%">{{> adminLeft}}</div>
-<div>
-  users 首頁
+
+<div class="col-10 m-0 p-0">
+  <div class="border-bottom">
+    <h5 class="p-3 font-weight-bold mb-0">推文清單</h5>
+  </div>
+
+  {{#each user}}
+  <div class="card" style="border-radius: 0px;">
+    <div class="card-body">
+      <div class="media">
+        <img class="admin-user-cover" src='{{this.cover}}'></img>
+        <img src="{{ this.avatar }}" class="mr-3 rounded-circle" alt="{{ this.name }}"
+          style="width: 64px;height: 64px;">
+
+        <div class="media-body">
+          <div class="d-flex">
+            <h5>{{ this.name }}</h5>
+            <p class="ml-2 text-secondary">
+              @{{this.account}}
+            </p>
+          </div>
+          <div class="d-flex justify-content-center">
+            <div style="margin-right:6px;">
+              <span>{{this.tweetCount}} 則留言</span>
+            </div>
+            <div style="margin-left:6px;">
+              <span>按了{{this.likeCount}}喜歡</span>
+            </div>
+          </div>
+          <div class="d-flex justify-content-center">
+            <div style="margin-right:6px;">
+              <span class="admin-user-data-followingValue">{{this.followingCount}}個</span>
+              <span class="admin-user-data-followingPostfix">跟隨中</span>
+            </div>
+            <div style="margin-left:6px;">
+              <span class="admin-user-data-followerValue">{{this.followerCount}}位</span>
+              <span class="admin-user-data-followerPostfix">跟隨者</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  {{/each}}
 </div>

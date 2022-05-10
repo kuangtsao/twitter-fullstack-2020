@@ -50,7 +50,7 @@ const adminController = {
   getUsers: async (req, res) => {
     try {
       const users = await User.findAll({
-        attributes: ['name', 'role', 'avatar', 'cover'],
+        attributes: ['name', 'role', 'account', 'avatar', 'cover'],
         include: [
           { model: User, as: 'Followers' },
           { model: User, as: 'Followings' },

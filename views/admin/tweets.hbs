@@ -1,4 +1,40 @@
 <div id="column1" style="float:left; width:20%; position: fixed; top:15px; left:5%">{{> adminLeft}}</div>
-<div>
-  tweets 首頁
+
+
+<div class="col-10 m-0 p-0">
+  <div class="border-bottom">
+    <h5 class="p-3 font-weight-bold mb-0">推文清單</h5>
+  </div>
+
+  {{#each tweet}}
+  <div class="card" style="border-radius: 0px;">
+    <div class="card-body">
+
+      <div class="position-absolute" style="top:10px; right:10px">
+        <form action="/admin/tweets/{{ this.id }}?_method=DELETE" method="post">
+          <button type="submit" class="btn btn-sm btn-link text-decoration-none text-secondary">
+            <i class="fas fa-times fa-2x"></i>
+          </button>
+        </form>
+      </div>
+
+      <div class="media">
+        <img src="{{ this.User.avatar }}" class="mr-3 rounded-circle" alt="{{ this.User.name }}"
+          style="width: 64px;height: 64px;">
+        <div class="media-body">
+          <div class="d-flex">
+            <h5>{{ this.User.name }}</h5>
+            <p class="ml-2 text-secondary">@{{this.User.account}} &bull;
+              {{relativeTimeFromNow this.createdAt}}
+            </p>
+          </div>
+          <p>
+            {{this.description}}
+          </p>
+        </div>
+      </div>
+    </div>
+  </div>
+  {{/each}}
+
 </div>

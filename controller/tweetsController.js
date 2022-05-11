@@ -39,6 +39,11 @@ const tweetsController = {
   },
   createFakePage: (req, res, next) => {
     console.log('tweetController.createFakePage')
+    try {
+      return res.render('createFake')
+    } catch (err) {
+      next(err)
+    }
   },
   replyFakePage: (req, res, next) => {
     console.log('tweetController.replyFakePage')

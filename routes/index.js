@@ -38,7 +38,7 @@ router.get('/users/:id/replies', authenticated, userController.getReplies)
 router.get('/users/:id/likes', authenticated, userController.getLikes)
 router.get('/users/:id', authenticated, userController.getUser)
 
-router.get('/', exampleController.indexPage)
+router.get('/', (req, res) => res.redirect('/tweets'))
 router.use('/', generalErrorHandler)
 
 module.exports = router

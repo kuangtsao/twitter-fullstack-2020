@@ -25,7 +25,8 @@
       <div>
         <span><a href="/tweets/{{this.id}}/replies">回覆</a></span>
         <span>回覆數量</span>
-        <span><a href="/like/{{this.id}}">喜歡</a></span>
+        {{!-- TODO:偵測喜歡狀態，切換路由 --}}
+        <span><a href="/tweets/{{this.id}}/like">喜歡</a></span>
         <span>喜歡數量</span>
       </div>
     </blockquote>

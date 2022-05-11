@@ -24,6 +24,10 @@ router.get('/signup', userController.signUpPage)
 router.post('/signup', userController.signUp)
 router.get('/logout', userController.logout)
 
+// 推文 LIKE 功能
+router.post('/tweets/:tweetId/like', authenticated, userController.addLike)
+router.post('/tweets/:tweetId/unlike', authenticated, userController.removeLike)
+
 // 推文
 router.get('/tweets/:tweetId/replies', authenticated, tweetController.replyFakePage)
 router.post('/tweets/:tweetId/replies', authenticated, tweetController.addReply)
@@ -31,10 +35,6 @@ router.get('/tweets/:tweetId', authenticated, tweetController.getTweet)
 router.get('/tweets/create', authenticated, tweetController.createFakePage)
 router.get('/tweets', authenticated, tweetController.getTweets)
 router.post('/tweets', authenticated, tweetController.addTweet)
-
-// LIKE 功能
-router.post('/tweets/:tweetId/like', authenticated, userController.addLike)
-router.post('/tweets/:tweetId/unlike', authenticated, userController.removeLike)
 
 // user
 router.get('/users/:id/tweets', authenticated, userController.getUserTweets)

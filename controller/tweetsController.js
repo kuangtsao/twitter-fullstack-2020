@@ -35,7 +35,8 @@ const tweetsController = {
         raw: true,
         nest: true
       })
-      return res.render('tweet', { tweet, replies })
+      const topUsers = await User.findAll({ raw: true })
+      return res.render('tweet', { tweet, replies, topUsers })
     } catch (err) {
       next(err)
     }

@@ -8,7 +8,7 @@
 <p>user account @ {{ user.account }}</p>
 <p>user introduction: {{ user.introduction }}</p>
 <a href="/users/{{ user.id }}/followings"><p>{{ user.Followings.length }}個跟隨中(following)</p></a>
-<a href="/users/{{ user.id }}/followings"><p>{{ user.Followers.length }}個跟隨者(follower)</p></a>
+<a href="/users/{{ user.id }}/followers"><p>{{ user.Followers.length }}個跟隨者(follower)</p></a>
 
 {{!-- 是本人，顯示編輯個人資料按鈕 --}}
 {{#ifCond logInUser.id user.id}}

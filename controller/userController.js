@@ -256,6 +256,13 @@ const userController = {
           { model: User, as: 'Followings', attributes: ['id'] }
         ]
       })
+      const currentUserId = req.params.id
+      const currentUserName = followings.toJSON().name
+      const currentUserTweetCount = await Tweet.count({
+        where: {
+          UserId: currentUserId
+        }
+      })
       // followingUserId = paramsUserId 的 followings UserId
       const followingUserId = followings.toJSON().Followings.map(fu => fu.id)
       const followingUserTweets = await Tweet.findAll({
@@ -267,14 +274,16 @@ const userController = {
         raw: true,
         nest: true
       })
-
       const data = followingUserTweets.map(tweet => ({
         ...tweet,
         isFollowed: helpers.getUser(req) && helpers.getUser(req).Followings.some(f => f.id === tweet.UserId)
       }))
 
       return res.render('followings', {
-        tweets: data
+        tweets: data,
+        currentUserId,
+        currentUserName,
+        currentUserTweetCount
       })
     } catch (err) {
       next(err)
@@ -282,16 +291,23 @@ const userController = {
   },
   getFollowers: async (req, res, next) => {
     try {
-      const followings = await User.findByPk(req.params.id, {
+      const followers = await User.findByPk(req.params.id, {
         include: [
-          { model: User, as: 'Followings', attributes: ['id'] }
+          { model: User, as: 'Followers', attributes: ['id'] }
         ]
       })
-      // followingUserId = paramsUserId 的 followings UserId
-      const followingUserId = followings.toJSON().Followings.map(fu => fu.id)
-      const followingUserTweets = await Tweet.findAll({
+      const currentUserId = req.params.id
+      const currentUserName = followers.toJSON().name
+      const currentUserTweetCount = await Tweet.count({
+        where: {
+          UserId: currentUserId
+        }
+      })
+      // followingUserId = paramsUserId 的 Followers UserId
+      const followerUserId = followers.toJSON().Followers.map(fu => fu.id)
+      const followerUserTweets = await Tweet.findAll({
         include: [{ model: User, attributes: ['id', 'name', 'avatar', 'account'] }],
-        where: { UserId: followingUserId },
+        where: { UserId: followerUserId },
         order: [
           ['updatedAt', 'DESC']
         ],
@@ -299,13 +315,16 @@ const userController = {
         nest: true
       })
 
-      const data = followingUserTweets.map(tweet => ({
+      const data = followerUserTweets.map(tweet => ({
         ...tweet,
-        isFollowed: helpers.getUser(req) && helpers.getUser(req).Followings.some(f => f.id === tweet.UserId)
+        isFollowed: helpers.getUser(req) && helpers.getUser(req).Followers.some(f => f.id === tweet.UserId)
       }))
 
-      return res.render('followings', {
-        tweets: data
+      return res.render('followers', {
+        tweets: data,
+        currentUserId,
+        currentUserName,
+        currentUserTweetCount
       })
     } catch (err) {
       next(err)

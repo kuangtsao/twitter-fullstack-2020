@@ -18,6 +18,21 @@ const tweetsController = {
     } catch (err) {
       next(err)
     }
+  },
+  getTweet: (req, res, next) => {
+    console.log('tweetController.getTweet')
+  },
+  addTweet: (req, res, next) => {
+    console.log('tweetController.addTweet')
+  },
+  createFakePage: (req, res, next) => {
+    console.log('tweetController.createFakePage')
+  },
+  replyFakePage: (req, res, next) => {
+    console.log('tweetController.replyFakePage')
+  },
+  addReply: (req, res, next) => {
+    console.log('tweetController.addReply')
   }
 }
 module.exports = tweetsController

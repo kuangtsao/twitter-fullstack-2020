@@ -81,7 +81,7 @@ const userController = {
   getUser: async (req, res, next) => {
     try {
       const userId = req.params.id
-      const user = await User.findByPk(userId, {
+      const paramsUser = await User.findByPk(userId, {
         include: [
           { model: Tweet, include: Reply },
           { model: Reply, include: User },
@@ -90,9 +90,12 @@ const userController = {
           { model: User, as: 'Followers' }
         ]
       })
-      if (!user) throw new Error("user didn't exist!")
+      if (!paramsUser) throw new Error("user didn't exist!")
+      // console.log('passport_user:', helpers.getUser(req).Followings)
+      const isFollowed = helpers.getUser(req).Followings && helpers.getUser(req).Followings.some(f => f.id === Number(userId))
       return res.render('user', {
-        user: user.toJSON()
+        user: paramsUser.toJSON(),
+        isFollowed
       })
     } catch (err) {
       next(err)
@@ -213,15 +216,13 @@ const userController = {
   addFollowing: async (req, res, next) => {
     try {
       const { id } = req.params
-      const { user, followship } = await Promise.all([
-        User.findByPk(id),
-        Followship.findOne({
-          where: {
-            followerId: helpers.getUser(req).id,
-            followingId: req.params.id
-          }
-        })
-      ])
+      const user = await User.findByPk(id)
+      const followship = await Followship.findOne({
+        where: {
+          followerId: helpers.getUser(req).id,
+          followingId: req.params.id
+        }
+      })
       if (!user) throw new Error("User didn't exist!")
       if (followship) throw new Error('You are already following this user!')
       await Followship.create({
@@ -235,7 +236,7 @@ const userController = {
   },
   removeFollowing: async (req, res, next) => {
     try {
-      const followship = Followship.findOne({
+      const followship = await Followship.findOne({
         where: {
           followerId: helpers.getUser(req).id,
           followingId: req.params.id
@@ -244,6 +245,68 @@ const userController = {
       if (!followship) throw new Error("You haven't followed this user!")
       await followship.destroy()
       return res.redirect('back')
+    } catch (err) {
+      next(err)
+    }
+  },
+  getFollowings: async (req, res, next) => {
+    try {
+      const followings = await User.findByPk(req.params.id, {
+        include: [
+          { model: User, as: 'Followings', attributes: ['id'] }
+        ]
+      })
+      // followingUserId = paramsUserId 的 followings UserId
+      const followingUserId = followings.toJSON().Followings.map(fu => fu.id)
+      const followingUserTweets = await Tweet.findAll({
+        include: [{ model: User, attributes: ['id', 'name', 'avatar', 'account'] }],
+        where: { UserId: followingUserId },
+        order: [
+          ['updatedAt', 'DESC']
+        ],
+        raw: true,
+        nest: true
+      })
+
+      const data = followingUserTweets.map(tweet => ({
+        ...tweet,
+        isFollowed: helpers.getUser(req) && helpers.getUser(req).Followings.some(f => f.id === tweet.UserId)
+      }))
+
+      return res.render('followings', {
+        tweets: data
+      })
+    } catch (err) {
+      next(err)
+    }
+  },
+  getFollowers: async (req, res, next) => {
+    try {
+      const followings = await User.findByPk(req.params.id, {
+        include: [
+          { model: User, as: 'Followings', attributes: ['id'] }
+        ]
+      })
+      // followingUserId = paramsUserId 的 followings UserId
+      const followingUserId = followings.toJSON().Followings.map(fu => fu.id)
+      const followingUserTweets = await Tweet.findAll({
+        include: [{ model: User, attributes: ['id', 'name', 'avatar', 'account'] }],
+        where: { UserId: followingUserId },
+        order: [
+          ['updatedAt', 'DESC']
+        ],
+        raw: true,
+        nest: true
+      })
+
+      const data = followingUserTweets.map(tweet => ({
+        ...tweet,
+        isFollowed: helpers.getUser(req) && helpers.getUser(req).Followings.some(f => f.id === tweet.UserId)
+      }))
+
+      return res.render('followings', {
+        tweets: data
+      })
     } catch (err) {
       next(err)
     }

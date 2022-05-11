@@ -36,12 +36,15 @@ router.post('/following/:id', authenticated, userController.addFollowing)
 router.delete('/following/:id', authenticated, userController.removeFollowing)
 
 // user
-router.get('/users/:id/followings', authenticated, userController.getUser)
-router.get('/users/:id/followers', authenticated, userController.getUser)
+router.get('/users/:id/followings', authenticated, userController.getFollowings)
+router.get('/users/:id/followers', authenticated, userController.getFollowers)
 router.get('/users/:id/tweets', authenticated, userController.getUserTweets)
 router.get('/users/:id/replies', authenticated, userController.getReplies)
 router.get('/users/:id/likes', authenticated, userController.getLikes)
 router.get('/users/:id', authenticated, userController.getUser)
+
+// 防呆路由
+router.get('/users', authenticated, (req, res) => res.redirect('/tweets'))
 
 router.get('/', (req, res) => res.redirect('/tweets'))
 router.use('/', generalErrorHandler)

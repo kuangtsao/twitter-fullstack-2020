@@ -1,1 +1,28 @@
 {{> followship-tabs route='followings'}}
+<p>followings頁面</p>
+{{#each tweets}}
+  <blockquote class="blockquote mb-0">
+    <span><a href="/users/{{this.UserId}}">{{ this.User.name }}</a></span>
+    <span class="blockquote-footer"> @{{ this.User.account }}</span>
+    <span>{{ relativeTimeFromNow this.createdAt }}</span>
+    
+  {{#ifCond this.UserId ../logInUser.id }}
+  {{else}}
+    {{#if isFollowed}}
+      <form action="/following/{{this.UserId}}?_method=DELETE" method="POST" style="display: contents;">
+        <button type="submit" class="btn btn-danger">取消追蹤</button>
+      </form>
+    {{else}}
+      <form action="/following/{{this.UserId}}" method="POST" style="display: contents;">
+        <button type="submit" class="btn btn-primary">追蹤</button>
+      </form>
+    {{/if}}
+  {{/ifCond}}
+
+
+    <p>{{ this.description }}</p>
+  </blockquote>
+
+
+  <hr />
+{{/each}}

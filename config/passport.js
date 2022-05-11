@@ -46,9 +46,9 @@ passport.deserializeUser((id, cb) => {
   // 拿到user.Likes的陣列[UserId:1,TweetId:1]
   return User.findByPk(id, {
     include: [
-      { model: Like },
-      { model: User, as: 'Followers' },
-      { model: User, as: 'Followings' }
+      { model: Like, attributes: ['id'] },
+      { model: User, as: 'Followers', attributes: ['id'] },
+      { model: User, as: 'Followings', attributes: ['id'] }
     ]
   })
     .then(user => {

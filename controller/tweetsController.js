@@ -1,4 +1,4 @@
-const { Tweet, User } = require('../models')
+const { Tweet, User, Reply } = require('../models')
 const { getUser } = require('../_helpers')
 const tweetsController = {
   getTweets: async (req, res, next) => {
@@ -19,12 +19,30 @@ const tweetsController = {
       next(err)
     }
   },
-  getTweet: (req, res, next) => {
-    console.log('tweetController.getTweet')
+  getTweet: async (req, res, next) => {
+    const tweetId = Number(req.params.tweetId)
+
+    try {
+      const tweet = await Tweet.findByPk(tweetId, {
+        raw: true
+      })
+      const replies = await Reply.findAll({
+        where: { tweetId },
+        include: {
+          model: User,
+          attributes: ['name', 'account', 'avatar']
+        },
+        raw: true,
+        nest: true
+      })
+      return res.render('tweet', { tweet, replies })
+    } catch (err) {
+      next(err)
+    }
   },
   addTweet: async (req, res, next) => {
     const { description } = req.body
-    const UserId = getUser(req).id
+    const UserId = getUser(req) && getUser(req).id
     try {
       if (!description || description.trim().length === 0) throw new Error('不能發空白推！')
       if (description.length > 140) throw new Error('推文不能超過140字！')
@@ -38,14 +56,13 @@ const tweetsController = {
     }
   },
   createFakePage: (req, res, next) => {
-    console.log('tweetController.createFakePage')
     try {
       return res.render('createFake')
     } catch (err) {
       next(err)
     }
   },
-  replyFakePage: (req, res, next) => {
+  replyFakePage: async (req, res, next) => {
     console.log('tweetController.replyFakePage')
   },
   addReply: (req, res, next) => {

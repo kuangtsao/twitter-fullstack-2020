@@ -24,12 +24,18 @@ const tweetsController = {
   },
   addTweet: async (req, res, next) => {
     const { description } = req.body
-    const userId = getUser(req)
-    if (!description) throw new Error('不能發空白推！')
-    if (description.length > 140) throw new Error('推文不能超過140字！')
-    console.log('addTweet')
-    console.log(`description datatype: ${typeof (description)}`)
-    console.log(getUser(req))
+    const UserId = getUser(req).id
+    try {
+      if (!description || description.trim().length === 0) throw new Error('不能發空白推！')
+      if (description.length > 140) throw new Error('推文不能超過140字！')
+      await Tweet.create({
+        description,
+        UserId
+      })
+      return res.redirect('/tweets')
+    } catch (err) {
+      next(err)
+    }
   },
   createFakePage: (req, res, next) => {
     console.log('tweetController.createFakePage')

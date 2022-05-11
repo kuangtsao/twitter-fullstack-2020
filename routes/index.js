@@ -6,7 +6,6 @@ const { generalErrorHandler } = require('../middleware/error-handler')
 const passport = require('../config/passport')
 const userController = require('../controller/userController')
 const tweetController = require('../controller/tweetsController.js')
-const exampleController = require('../controller/exampleController')
 const adminController = require('../controller/adminController.js')
 
 // Admin

@@ -1,5 +1,5 @@
 const bcrypt = require('bcryptjs')
-const { Tweet, User, Like, Reply } = require('../models')
+const { Tweet, User, Like, Reply, Followship } = require('../models')
 const { Op } = require('sequelize')
 const helpers = require('../_helpers')
 
@@ -91,15 +91,6 @@ const userController = {
         ]
       })
       if (!user) throw new Error("user didn't exist!")
-      // console.log(user.toJSON())
-      // let personal 之後用來輸出到前端確認查看個人頁的user id是否是本人
-      // 沒有完整登入流程，沒走passport就不會拿到req.user
-      // 目前回傳給前端的user是上面資料庫從params.id找出來的user
-      // 以下為第二種確認登入者id是否=params.id的方法
-      // console.log('req.user', req.user)
-      // req.user.id.toString() === req.params.id
-      //   ? personal = true
-      //   : personal = false
       return res.render('user', {
         user: user.toJSON()
       })
@@ -218,6 +209,44 @@ const userController = {
       })
       .then(() => res.redirect('back'))
       .catch(err => next(err))
+  },
+  addFollowing: async (req, res, next) => {
+    try {
+      const { id } = req.params
+      const { user, followship } = await Promise.all([
+        User.findByPk(id),
+        Followship.findOne({
+          where: {
+            followerId: helpers.getUser(req).id,
+            followingId: req.params.id
+          }
+        })
+      ])
+      if (!user) throw new Error("User didn't exist!")
+      if (followship) throw new Error('You are already following this user!')
+      await Followship.create({
+        followerId: helpers.getUser(req).id,
+        followingId: id
+      })
+      return res.redirect('back')
+    } catch (err) {
+      next(err)
+    }
+  },
+  removeFollowing: async (req, res, next) => {
+    try {
+      const followship = Followship.findOne({
+        where: {
+          followerId: helpers.getUser(req).id,
+          followingId: req.params.id
+        }
+      })
+      if (!followship) throw new Error("You haven't followed this user!")
+      await followship.destroy()
+      return res.redirect('back')
+    } catch (err) {
+      next(err)
+    }
   }
 }
 module.exports = userController

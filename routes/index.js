@@ -6,7 +6,6 @@ const { generalErrorHandler } = require('../middleware/error-handler')
 const passport = require('../config/passport')
 const userController = require('../controller/userController')
 const tweetController = require('../controller/tweetsController.js')
-const exampleController = require('../controller/exampleController')
 const adminController = require('../controller/adminController.js')
 
 // Admin
@@ -32,7 +31,13 @@ router.get('/tweets', authenticated, tweetController.getTweets)
 router.post('/tweets/:tweetId/like', authenticated, userController.addLike)
 router.post('/tweets/:tweetId/unlike', authenticated, userController.removeLike)
 
+// follow 功能
+router.post('/following/:id', authenticated, userController.addFollowing)
+router.delete('/following/:id', authenticated, userController.removeFollowing)
+
 // user
+router.get('/users/:id/followings', authenticated, userController.getUser)
+router.get('/users/:id/followers', authenticated, userController.getUser)
 router.get('/users/:id/tweets', authenticated, userController.getUserTweets)
 router.get('/users/:id/replies', authenticated, userController.getReplies)
 router.get('/users/:id/likes', authenticated, userController.getLikes)

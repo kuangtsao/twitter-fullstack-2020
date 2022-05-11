@@ -7,12 +7,15 @@
 <p>user name: {{ user.name }}</p>
 <p>user account @ {{ user.account }}</p>
 <p>user introduction: {{ user.introduction }}</p>
-<p>{{ user.Followings.length }}個跟隨中(following)</p>
-<p>{{ user.Followers.length }}個跟隨者(follower)</p>
-{{#if personal }}
-  {{!-- <a class="btn btn-primary" href="/users/{{user.id}}/edit">edit</a> --}}
-  <button>是本人才看的到的神奇按鈕</button>
-{{/if}}
+<a href="/users/{{ user.id }}/followings"><p>{{ user.Followings.length }}個跟隨中(following)</p></a>
+<a href="/users/{{ user.id }}/followings"><p>{{ user.Followers.length }}個跟隨者(follower)</p></a>
+
+{{!-- TODO: 本人才能看到的編輯個人資料按鈕 --}}
+{{#ifCond logInUser.id user.id}}
+  <form action="/users/{{user.id}}/edit" method="GET">
+    <button type="submit">>是本人才看的到的神奇按鈕</button>
+  </form>
+{{/ifCond}}
 
 debug用:
 <p> {{ user.Replies.length }} 回文 </p>

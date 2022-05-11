@@ -84,11 +84,6 @@ const adminController = {
       res.status(302)
       return res.redirect('back')
     }
-  },
-  logout: (req, res) => {
-    req.flash('success_messages', '登出成功！')
-    req.logout()
-    res.redirect('/admin/signIn')
   }
 }
 module.exports = adminController

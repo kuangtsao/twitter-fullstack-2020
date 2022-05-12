@@ -32,8 +32,8 @@ router.post('/tweets/:tweetId/like', authenticated, userController.addLike)
 router.post('/tweets/:tweetId/unlike', authenticated, userController.removeLike)
 
 // follow 功能
-router.post('/following/:id', authenticated, userController.addFollowing)
-router.delete('/following/:id', authenticated, userController.removeFollowing)
+router.post('/followships/:id', authenticated, userController.addFollowing)
+router.delete('/followships/:id', authenticated, userController.removeFollowing)
 
 // user
 router.get('/users/:id/followings', authenticated, userController.getFollowings)

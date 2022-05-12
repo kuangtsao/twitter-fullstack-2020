@@ -12,11 +12,11 @@
   {{#ifCond this.UserId ../logInUser.id }}
   {{else}}
     {{#if isFollowed}}
-      <form action="/following/{{this.UserId}}?_method=DELETE" method="POST" style="display: contents;">
+      <form action="/followships/{{this.UserId}}?_method=DELETE" method="POST" style="display: contents;">
         <button type="submit" class="btn btn-danger">取消追蹤</button>
       </form>
     {{else}}
-      <form action="/following/{{this.UserId}}" method="POST" style="display: contents;">
+      <form action="/followships/{{this.UserId}}" method="POST" style="display: contents;">
         <button type="submit" class="btn btn-primary">追蹤</button>
       </form>
     {{/if}}

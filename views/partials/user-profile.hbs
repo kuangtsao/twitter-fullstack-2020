@@ -19,11 +19,11 @@
 {{!-- 不是本人，顯示追蹤判斷按鈕 --}}
 {{!--  TODO:  isFollowed 判斷 --}}
   {{#if isFollowed}}
-    <form action="/following/{{user.id}}?_method=DELETE" method="POST" style="display: contents;">
+    <form action="/followships/{{user.id}}?_method=DELETE" method="POST" style="display: contents;">
       <button type="submit" class="btn btn-danger">取消追蹤</button>
     </form>
   {{else}}
-    <form action="/following/{{user.id}}" method="POST" style="display: contents;">
+    <form action="/followships/{{user.id}}" method="POST" style="display: contents;">
       <button type="submit" class="btn btn-primary">追蹤</button>
     </form>
   {{/if}}

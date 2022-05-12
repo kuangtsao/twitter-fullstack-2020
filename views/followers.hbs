@@ -9,7 +9,6 @@
     <span><a href="/users/{{this.id}}">{{ this.name }}</a></span>
     <span class="blockquote-footer"> @{{ this.account }}</span>
     <span>{{ relativeTimeFromNow this.createdAt }}</span>
-    {{!-- <button type="submit" class="btn btn-danger">正在跟隨</button> --}}
   {{#ifCond this.id ../logInUser.id }}
   {{else}}
     {{#if this.isFollowed}}

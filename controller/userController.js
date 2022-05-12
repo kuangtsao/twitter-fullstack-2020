@@ -210,19 +210,29 @@ const userController = {
   },
   addFollowing: async (req, res, next) => {
     try {
-      const { id } = req.params
-      if (Number(id) === (helpers.getUser(req) && helpers.getUser(req).id)) throw new Error("CAN'T DO THAT SHIT")
+      // console.log('req.body.id', req.body.id)
+      // console.log('req.params.id', req.params.id)
+      const id = req.params.id || req.body.id
+      const loginUserId = helpers.getUser(req) && helpers.getUser(req).id
+      // console.log('loginUserId', loginUserId)
+
+      if (id === loginUserId.toString()) {
+        return res.redirect('back')
+      }
+
       const user = await User.findByPk(id)
       if (!user) throw new Error("User didn't exist!")
+
       const followship = await Followship.findOne({
         where: {
-          followerId: helpers.getUser(req).id,
-          followingId: req.params.id
+          followerId: loginUserId,
+          followingId: id
         }
       })
       if (followship) throw new Error('You are already following this user!')
+
       await Followship.create({
-        followerId: helpers.getUser(req).id,
+        followerId: loginUserId,
         followingId: id
       })
       return res.redirect('back')
@@ -247,39 +257,26 @@ const userController = {
   },
   getFollowings: async (req, res, next) => {
     try {
-      const followings = await User.findByPk(req.params.id, {
+      const currentUserId = req.params.id
+      const currentUser = await User.findByPk(currentUserId, {
+        attributes: ['id', 'name', 'account'],
         include: [
-          { model: User, as: 'Followings', attributes: ['id'] }
+          {
+            model: User,
+            as: 'Followings',
+            attributes: ['id', 'avatar', 'name', 'account', 'introduction']
+          },
+          { model: Tweet, attributes: ['id'] }
         ]
       })
-      const currentUserId = req.params.id
-      const currentUserName = followings.toJSON().name
-      const currentUserTweetCount = await Tweet.count({
-        where: {
-          UserId: currentUserId
-        }
-      })
-      // followingUserId = paramsUserId 的 followings UserId
-      const followingUserId = followings.toJSON().Followings.map(fu => fu.id)
-      const followingUserTweets = await Tweet.findAll({
-        include: [{ model: User, attributes: ['id', 'name', 'avatar', 'account'] }],
-        where: { UserId: followingUserId },
-        order: [
-          ['createdAt', 'DESC']
-        ],
-        raw: true,
-        nest: true
-      })
-      const data = followingUserTweets.map(tweet => ({
-        ...tweet,
-        isFollowed: helpers.getUser(req) && helpers.getUser(req).Followings.some(f => f.id === tweet.UserId)
+      const data = currentUser.toJSON().Followings.map(cf => ({
+        ...cf,
+        isFollowed: helpers.getUser(req) && helpers.getUser(req).Followers && helpers.getUser(req).Followers.some(f => f.id === cf.id)
       }))
-
       return res.render('followings', {
-        tweets: data,
-        currentUserId,
-        currentUserName,
-        currentUserTweetCount
+        currentUser: currentUser.toJSON(),
+        followings: data,
+        currentUserId
       })
     } catch (err) {
       next(err)
@@ -294,18 +291,16 @@ const userController = {
           {
             model: User,
             as: 'Followers',
-            attributes: ['id', 'avatar', 'name', 'account', 'introduction']
+            attributes: ['id', 'avatar', 'name', 'account', 'introduction'],
+            order: ['createdAt', 'DESC']
           },
-          { model: Tweet, attributes: ['id'] } // 算 currentUser 的推文數
+          { model: Tweet, attributes: ['id'] }
         ]
       })
-      // console.log('currentUser.toJSON()', currentUser.toJSON().Followers)
       const data = currentUser.toJSON().Followers.map(cf => ({
         ...cf,
-        isFollowed: helpers.getUser(req) && helpers.getUser(req).Followings.some(f => f.id === cf.id)
+        isFollowed: helpers.getUser(req) && helpers.getUser(req).Followings && helpers.getUser(req).Followings.some(f => f.id === cf.id)
       }))
-      console.log('helpers.getUser(req).Followers', helpers.getUser(req).Followers)
-      console.log('data', data)
       return res.render('followers', {
         currentUser: currentUser.toJSON(),
         followers: data,

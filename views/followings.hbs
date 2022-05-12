@@ -1,29 +1,29 @@
-{{currentUserName}}
-<p>{{currentUserTweetCount}}推文</p>
+{{currentUser.name}}
+<p>{{currentUser.Tweets.length}}推文</p>
 
 {{> followship-tabs route='followings'}}
 
-{{#each tweets}}
+{{#each followings }}
   <blockquote class="blockquote mb-0">
-    <span><a href="/users/{{this.UserId}}">{{ this.User.name }}</a></span>
-    <span class="blockquote-footer"> @{{ this.User.account }}</span>
+    <span><a href="/users/{{this.id}}">{{ this.name }}</a></span>
+    <span class="blockquote-footer"> @{{ this.account }}</span>
     <span>{{ relativeTimeFromNow this.createdAt }}</span>
     
   {{#ifCond this.UserId ../logInUser.id }}
   {{else}}
     {{#if isFollowed}}
-      <form action="/followships/{{this.UserId}}?_method=DELETE" method="POST" style="display: contents;">
+      <form action="/followships/{{this.id}}?_method=DELETE" method="POST" style="display: contents;">
         <button type="submit" class="btn btn-danger">取消追蹤</button>
       </form>
     {{else}}
-      <form action="/followships/{{this.UserId}}" method="POST" style="display: contents;">
+      <form action="/followships/{{this.id}}" method="POST" style="display: contents;">
         <button type="submit" class="btn btn-primary">追蹤</button>
       </form>
     {{/if}}
   {{/ifCond}}
 
 
-    <p>{{ this.description }}</p>
+    <p>{{ this.introduction }}</p>
   </blockquote>
 
 

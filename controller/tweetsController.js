@@ -79,8 +79,26 @@ const tweetsController = {
       next(err)
     }
   },
-  addReply: (req, res, next) => {
+  addReply: async (req, res, next) => {
     console.log('tweetController.addReply')
+    const TweetId = Number(req.params.tweetId)
+    console.log(TweetId)
+    const UserId = getUser(req) && getUser(req).id
+    console.log(UserId)
+    const { comment } = req.body
+
+    try {
+      if (!comment || comment.trim().length === 0) throw new Error('不能發空白回覆！')
+      if (comment.length > 140) throw new Error('推文不能超過140字！')
+      await Reply.create({
+        UserId,
+        TweetId,
+        comment
+      })
+      return res.redirect('/tweets')
+    } catch (err) {
+      next(err)
+    }
   }
 }
 module.exports = tweetsController

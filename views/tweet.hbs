@@ -33,6 +33,7 @@
       <span>{{ relativeTimeFromNow this.createdAt }}</span>
       <p>{{ this.comment }}</p>
       <div>
+        {{!-- TODO: 確認是回覆到同一個串還是原本的 twitter 行為(回在該回覆的下面) --}}
         <span><a href="/tweets/{{this.id}}/replies">回覆</a></span>
         <span>回覆數量</span>
         {{!-- TODO:偵測喜歡狀態，切換路由 --}}

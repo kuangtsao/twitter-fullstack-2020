@@ -109,7 +109,7 @@ const userController = {
           { model: Like, include: [{ model: Tweet, include: [Reply] }] }
         ],
         order: [
-          ['createdAt', 'DESC']
+          ['updatedAt', 'DESC']
         ]
       })
       if (!user) throw new Error("user didn't exist!")
@@ -132,18 +132,13 @@ const userController = {
           { model: Tweet, include: [Reply, Like] }
         ],
         order: [
-          [Tweet, 'createdAt', 'DESC']
+          [Tweet, 'updatedAt', 'DESC']
         ]
       })
       if (!user) throw new Error("user didn't exist!")
-      const likedTweetId = helpers.getUser(req) && helpers.getUser(req).Likes && helpers.getUser(req).Likes.map(liked => liked.TweetId)
-      const tweets = user.toJSON().Tweets.map(tweet => ({
-        ...tweet,
-        isLiked: likedTweetId && likedTweetId.includes(tweet.id)
-      }))
+
       return res.render('tweets', {
-        user: user.toJSON(),
-        tweets
+        tweets: user.toJSON().Tweets
       })
     } catch (err) {
       next(err)
@@ -166,7 +161,7 @@ const userController = {
           }
         ],
         order: [
-          [Reply, 'createdAt', 'DESC']
+          [Reply, 'updatedAt', 'DESC']
         ]
       })
       if (!user) throw new Error("user didn't exist!")

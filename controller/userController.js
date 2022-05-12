@@ -217,7 +217,7 @@ const userController = {
       // console.log('loginUserId', loginUserId)
 
       if (id === loginUserId.toString()) {
-        return res.redirect('back')
+        return res.redirect(200, 'back')
       }
 
       const user = await User.findByPk(id)

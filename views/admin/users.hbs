@@ -17,7 +17,8 @@
           {{#each user}}
           <div class="col-3 p-1" style="border-radius: 5px;">
 
-            <div class="card mb-2 mr-1" style="width: 100%; background-color: rgb(247, 247, 247);border-color: white;">
+            <div class="card mb-2 mr-1"
+              style="width: 100%; hight: 100%; background-color: rgb(247, 247, 247);border-color: white;">
 
               <img class="card-img-top" style="height: 150px" src="{{ this.cover }}" alt="{{ this.name }}">
 
@@ -43,8 +44,8 @@
                           fill="#696974" />
                       </svg>
                     </i>
-                    {{#if this.Tweets.length}}
-                    {{ this.Tweets.length }}
+                    {{#if this.tweetCount}}
+                    {{ this.tweetCount}}
                     {{else}}
                     0
                     {{/if}}
@@ -57,8 +58,8 @@
                           fill="#6C757D" />
                       </svg>
                     </i>
-                    {{#if this.Likes.length}}
-                    {{ this.Likes.length }}
+                    {{#if this.likeCount}}
+                    {{ this.likeCount}}
                     {{else}}
                     0
                     {{/if}}
@@ -66,8 +67,8 @@
                 </div>
 
                 <div class="mt-3">
-                  {{ this.Followings.length }} 個<span>跟隨中</span>
-                  {{ this.Followers.length }} 位<span>跟隨者</span>
+                  {{ this.followingCount }} 個<span>跟隨中</span>
+                  {{ this.followerCount }} 位<span>跟隨者</span>
                 </div>
 
               </div>

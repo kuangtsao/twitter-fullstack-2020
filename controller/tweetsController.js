@@ -64,7 +64,20 @@ const tweetsController = {
     }
   },
   replyFakePage: async (req, res, next) => {
-    console.log('tweetController.replyFakePage')
+    const tweetId = Number(req.params.tweetId)
+    const tweet = await Tweet.findByPk(tweetId, {
+      include: {
+        model: User,
+        attributes: ['name', 'account', 'avatar']
+      },
+      raw: true,
+      nest: true
+    })
+    try {
+      return res.render('replyFake', tweet)
+    } catch (err) {
+      next(err)
+    }
   },
   addReply: (req, res, next) => {
     console.log('tweetController.addReply')

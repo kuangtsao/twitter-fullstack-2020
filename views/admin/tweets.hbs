@@ -13,6 +13,7 @@
       </div>
 
       {{#each tweet}}
+      <div class="d-flex justify-content-start admin-tweet"></div>
       <div class="card" style="border-radius: 0px;">
         <div class="card-body">
 
@@ -24,17 +25,14 @@
             </form>
           </div>
 
-          <div class="media">
-            <img src="{{ this.User.avatar }}" class="mr-3 rounded-circle" alt="{{ this.User.name }}"
-              style="width: 64px;height: 64px;">
+          <div class="media d-flex ">
+            <img src="{{ this.User.avatar }}" class=" rounded-circle mb-5 me-3" alt="{{ this.User.name }}"
+              style="width: 50px;height: 50px;">
             <div class="media-body">
-              <div class="d-flex">
+              <div class="d-flex d-inline ">
                 <h5>{{ this.User.name }}</h5>
-                <p class="ml-2 text-secondary">@{{this.User.account}}
-                <div class="mx-1">
-                  <p>•</p>
-                </div>
-                {{relativeTimeFromNow this.createdAt}}
+                <p class="ms-3 text-secondary d-inline">
+                  @{{this.User.account}} • {{relativeTimeFromNow this.createdAt}}
                 </p>
               </div>
               <p>

@@ -24,7 +24,7 @@ const adminController = {
             ? `${r.description.substring(0, 50)}...`
             : r.description
       }))
-      return res.render('admin/tweets', { status: 200, tweet })
+      return res.render('admin/tweets', { status: 200, tweet, page: 'tweets' })
     } catch (e) {
       console.log('e')
       res.status(302)
@@ -78,7 +78,7 @@ const adminController = {
       }))
       const newData = data.filter(a => a.role !== 'admin')
       const user = newData.sort((a, b) => b.tweetCount - a.tweetCount)
-      return res.render('admin/users', { status: 200, user })
+      return res.render('admin/users', { status: 200, user, page: 'users' })
     } catch (e) {
       console.log('e')
       res.status(302)

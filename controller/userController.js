@@ -1,70 +1,74 @@
 const bcrypt = require('bcryptjs')
-const { Tweet, User, Like, Reply } = require('../models')
+const { Tweet, User, Like, Reply, Followship } = require('../models')
 const { Op } = require('sequelize')
 const helpers = require('../_helpers')
 
 const userController = {
-  signUpPage: (req, res) => {
-    return res.render('signup')
+  signUpPage: async (req, res) => {
+    try {
+      return res.render('signup', { status: 200 })
+    } catch (err) {
+      res.status(302)
+      console.log('err')
+      return res.redirect('back')
+    }
   },
-  signUp: (req, res) => {
-    const { account, name, email, password, passwordCheck } = req.body
-    const errors = []
-    if (!account || !name || !email || !password || !passwordCheck) {
-      errors.push({ message: '所有欄位都是必填。' })
-    }
-    if (password !== passwordCheck) {
-      errors.push({ message: '密碼與確認密碼不相符！' })
-    }
-    if (name.length > 50) {
-      errors.push({ message: '名稱上限為50字！' })
-    }
-    if (errors.length) {
-      return res.render('signup', {
-        errors,
-        name,
-        email,
-        account
-      })
-    }
+  signUp: async (req, res) => {
+    try {
+      const { account, name, email, password, checkPassword } = req.body
 
-    User.findOne({
-      where: {
-        [Op.or]: [{ account }, { email }]
+      const errors = []
+
+      if (!name || !email || !password || !checkPassword || !account) {
+        errors.push({ message: '所有欄位都是必填。' })
       }
-    }).then(user => {
-      if (user) {
-        if (user.account === account) {
-          errors.push({ message: 'account 已重複註冊！' })
-        } else {
-          errors.push({ message: 'email 已重複註冊！' })
-        }
+      if (password !== checkPassword) {
+        errors.push({ message: '密碼與確認密碼不相符！' })
+      }
+      if (name.length > 50) {
+        errors.push({ message: '名稱上限為50字！' })
+      }
+
+      const userEmail = await User.findOne({ where: { email } })
+      const userAccount = await User.findOne({ where: { account } })
+      if (userEmail) {
+        errors.push({ message: '這個 Email 已經註冊過了。' })
+      }
+      if (userAccount) {
+        errors.push({ message: '這個 Account 已經註冊過了。' })
+      }
+      if (errors.length) {
         return res.render('signup', {
           errors,
           account,
           name,
           email,
           password,
-          passwordCheck
-        })
-      } else {
-        req.flash('success_messages', '註冊成功!')
-        return User.create({
-          account,
-          name,
-          email,
-          avatar: 'https://i.pinimg.com/474x/ff/4f/c3/ff4fc37f314916957e1103a2035a11fa.jpg',
-          password: bcrypt.hashSync(
-            req.body.password,
-            bcrypt.genSaltSync(10),
-            null
-          ),
-          role: 'user'
-        }).then(user => {
-          res.redirect('/signin')
+          checkPassword
         })
       }
-    })
+
+      await User.create({
+        account,
+        name,
+        email,
+        password: bcrypt.hashSync(
+          req.body.password,
+          bcrypt.genSaltSync(10),
+          null
+        ),
+        avatar:
+          'https://icon-library.com/images/default-user-icon/default-user-icon-17.jpg'
+      })
+
+      req.flash('success_messages', '註冊成功！')
+      res.status(200)
+      res.redirect('/signin')
+    } catch (err) {
+      res.status(302)
+      console.log('err')
+      return res.redirect('back')
+    }
   },
   signInPage: (req, res) => {
     res.render('signin')
@@ -81,27 +85,24 @@ const userController = {
   getUser: async (req, res, next) => {
     try {
       const userId = req.params.id
-      const user = await User.findByPk(userId, {
+      const paramsUser = await User.findByPk(userId, {
         include: [
-          { model: Tweet, include: Reply },
-          { model: Reply, include: User },
-          { model: Like },
-          { model: User, as: 'Followings' },
-          { model: User, as: 'Followers' }
+          {
+            model: Tweet,
+            order: [
+              ['updatedAt', 'DESC']
+            ],
+            include: [{ model: Reply, attributes: ['id'] }, { model: Like, attributes: ['id'] }]
+          },
+          { model: User, as: 'Followings', attributes: ['id'] },
+          { model: User, as: 'Followers', attributes: ['id'] }
         ]
       })
-      if (!user) throw new Error("user didn't exist!")
-      // console.log(user.toJSON())
-      // let personal 之後用來輸出到前端確認查看個人頁的user id是否是本人
-      // 沒有完整登入流程，沒走passport就不會拿到req.user
-      // 目前回傳給前端的user是上面資料庫從params.id找出來的user
-      // 以下為第二種確認登入者id是否=params.id的方法
-      // console.log('req.user', req.user)
-      // req.user.id.toString() === req.params.id
-      //   ? personal = true
-      //   : personal = false
+      if (!paramsUser) throw new Error("user didn't exist!")
+      const isFollowed = helpers.getUser(req).Followings && helpers.getUser(req).Followings.some(f => f.id === Number(userId))
       return res.render('user', {
-        user: user.toJSON()
+        user: paramsUser.toJSON(),
+        isFollowed
       })
     } catch (err) {
       next(err)
@@ -112,10 +113,12 @@ const userController = {
       const userId = req.params.id
       const user = await User.findByPk(userId, {
         include: [
-          { model: Like, include: [{ model: Tweet, include: [Reply] }] }
+          { model: Like, include: [{ model: Tweet, include: [Reply] }] },
+          { model: User, as: 'Followings', attributes: ['id'] },
+          { model: User, as: 'Followers', attributes: ['id'] }
         ],
         order: [
-          ['createdAt', 'DESC']
+          ['updatedAt', 'DESC']
         ]
       })
       if (!user) throw new Error("user didn't exist!")
@@ -124,30 +127,6 @@ const userController = {
         isLiked: true
       }))
       return res.render('likes', {
-        tweets
-      })
-    } catch (err) {
-      next(err)
-    }
-  },
-  getUserTweets: async (req, res, next) => {
-    try {
-      const userId = req.params.id
-      const user = await User.findByPk(userId, {
-        include: [
-          { model: Tweet, include: [Reply, Like] }
-        ],
-        order: [
-          [Tweet, 'createdAt', 'DESC']
-        ]
-      })
-      if (!user) throw new Error("user didn't exist!")
-      const likedTweetId = helpers.getUser(req) && helpers.getUser(req).Likes && helpers.getUser(req).Likes.map(liked => liked.TweetId)
-      const tweets = user.toJSON().Tweets.map(tweet => ({
-        ...tweet,
-        isLiked: likedTweetId && likedTweetId.includes(tweet.id)
-      }))
-      return res.render('tweets', {
         user: user.toJSON(),
         tweets
       })
@@ -169,10 +148,12 @@ const userController = {
                 attributes: ['name']
               }]
             }]
-          }
+          },
+          { model: User, as: 'Followings', attributes: ['id'] },
+          { model: User, as: 'Followers', attributes: ['id'] }
         ],
         order: [
-          [Reply, 'createdAt', 'DESC']
+          [Reply, 'updatedAt', 'DESC']
         ]
       })
       if (!user) throw new Error("user didn't exist!")
@@ -218,6 +199,105 @@ const userController = {
       })
       .then(() => res.redirect('back'))
       .catch(err => next(err))
+  },
+  addFollowing: async (req, res, next) => {
+    try {
+      const id = req.params.id || req.body.id
+      const loginUserId = helpers.getUser(req) && helpers.getUser(req).id
+
+      if (id === loginUserId.toString()) {
+        return res.redirect(200, 'back')
+      }
+
+      const user = await User.findByPk(id)
+      if (!user) throw new Error("User didn't exist!")
+
+      const followship = await Followship.findOne({
+        where: {
+          followerId: loginUserId,
+          followingId: id
+        }
+      })
+      if (followship) throw new Error('You are already following this user!')
+
+      await Followship.create({
+        followerId: loginUserId,
+        followingId: id
+      })
+      return res.redirect('back')
+    } catch (err) {
+      next(err)
+    }
+  },
+  removeFollowing: async (req, res, next) => {
+    try {
+      const followship = await Followship.findOne({
+        where: {
+          followerId: helpers.getUser(req).id,
+          followingId: req.params.id
+        }
+      })
+      if (!followship) throw new Error("You haven't followed this user!")
+      await followship.destroy()
+      return res.redirect('back')
+    } catch (err) {
+      next(err)
+    }
+  },
+  getFollowings: async (req, res, next) => {
+    try {
+      const currentUserId = req.params.id
+      const currentUser = await User.findByPk(currentUserId, {
+        attributes: ['id', 'name', 'account'],
+        include: [
+          {
+            model: User,
+            as: 'Followings',
+            attributes: ['id', 'avatar', 'name', 'account', 'introduction']
+          },
+          { model: Tweet, attributes: ['id'] }
+        ]
+      })
+      const data = currentUser.toJSON().Followings.map(cf => ({
+        ...cf,
+        isFollowed: helpers.getUser(req) && helpers.getUser(req).Followers && helpers.getUser(req).Followers.some(f => f.id === cf.id)
+      }))
+      return res.render('followings', {
+        currentUser: currentUser.toJSON(),
+        followings: data,
+        currentUserId
+      })
+    } catch (err) {
+      next(err)
+    }
+  },
+  getFollowers: async (req, res, next) => {
+    try {
+      const currentUserId = req.params.id
+      const currentUser = await User.findByPk(currentUserId, {
+        attributes: ['id', 'name', 'account'],
+        include: [
+          {
+            model: User,
+            as: 'Followers',
+            attributes: ['id', 'avatar', 'name', 'account', 'introduction'],
+            order: ['createdAt', 'DESC']
+          },
+          { model: Tweet, attributes: ['id'] }
+        ]
+      })
+      const data = currentUser.toJSON().Followers.map(cf => ({
+        ...cf,
+        isFollowed: helpers.getUser(req) && helpers.getUser(req).Followings && helpers.getUser(req).Followings.some(f => f.id === cf.id)
+      }))
+      return res.render('followers', {
+        currentUser: currentUser.toJSON(),
+        followers: data,
+        currentUserId
+      })
+    } catch (err) {
+      next(err)
+    }
   }
 }
 module.exports = userController

@@ -11,7 +11,6 @@ const adminController = require('../controller/adminController.js')
 // Admin
 router.get('/admin/signin', adminController.signinPage)
 router.post('/admin/signin', passport.authenticate('local', { failureRedirect: '/admin/signin', failureFlash: true }), adminController.signIn)
-router.get('/logout', adminController.logout)
 router.get('/admin/tweets', authenticatedAdmin, adminController.getTweets)
 router.delete('/admin/tweets/:id', authenticatedAdmin, adminController.deleteTweets)
 router.get('/admin/users', authenticatedAdmin, adminController.getUsers)
@@ -36,11 +35,21 @@ router.get('/tweets/:tweetId', authenticated, tweetController.getTweet)
 router.get('/tweets', authenticated, tweetController.getTweets)
 router.post('/tweets', authenticated, tweetController.addTweet)
 
+// follow 功能
+router.post('/followships', authenticated, userController.addFollowing)
+router.post('/followships/:id', authenticated, userController.addFollowing)
+router.delete('/followships/:id', authenticated, userController.removeFollowing)
+
 // user
-router.get('/users/:id/tweets', authenticated, userController.getUserTweets)
+router.get('/users/:id/followings', authenticated, userController.getFollowings)
+router.get('/users/:id/followers', authenticated, userController.getFollowers)
+router.get('/users/:id/tweets', authenticated, userController.getUser)
 router.get('/users/:id/replies', authenticated, userController.getReplies)
 router.get('/users/:id/likes', authenticated, userController.getLikes)
 router.get('/users/:id', authenticated, userController.getUser)
+
+// 防呆路由
+router.get('/users', authenticated, (req, res) => res.redirect('/tweets'))
 
 router.get('/', (req, res) => res.redirect('/tweets'))
 router.use('/', generalErrorHandler)

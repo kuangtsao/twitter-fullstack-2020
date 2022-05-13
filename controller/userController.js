@@ -97,7 +97,8 @@ const userController = {
         ]
       })
       if (!paramsUser) throw new Error("user didn't exist!")
-      const isFollowed = getUser(req).Followings && getUser(req).Followings.some(f => f.id === Number(userId))
+      const isFollowed = getUser(req) && getUser(req).Followings && getUser(req).Followings.some(f => f.id === Number(userId))
+      // console.log('paramsUser.toJSON()', paramsUser.toJSON())
       return res.render('user', {
         user: paramsUser.toJSON(),
         isFollowed
@@ -172,41 +173,51 @@ const userController = {
       next(err)
     }
   },
-  addLike: (req, res, next) => {
-    const { tweetId } = req.params
-    return Promise.all([
-      Tweet.findByPk(tweetId),
-      Like.findOne({
+  addLike: async (req, res, next) => {
+    try {
+      const { tweetId } = req.params
+      // console.log('tweetId', tweetId)
+      // const tweet = await Tweet.findByPk(tweetId)
+      // console.log('tweet.toJSON()', tweet.toJSON())
+      // if (!tweet) {
+      //   return res.redirect('back')
+      // }
+      // const like = Like.findOne({
+      //   where: {
+      //     userId: getUser(req) && getUser(req).id,
+      //     tweetId
+      //   }
+      // })
+      // if (like) {
+      //   return res.redirect('back')
+      // }
+      // console.log('like.toJSON()', like.toJSON())
+      await Like.create({
+        UserId: getUser(req) && getUser(req).id,
+        TweetId: tweetId
+      })
+      return res.redirect('back')
+    } catch (err) {
+      next(err)
+    }
+  },
+  removeLike: async (req, res, next) => {
+    try {
+      const { tweetId } = req.params
+      const like = await Like.findOne({
         where: {
-          userId: getUser(req).id,
-          tweetId
+          userId: getUser(req) && getUser(req).id,
+          tweetId: tweetId
         }
       })
-    ])
-      .then(([tweet, like]) => {
-        if (!tweet) throw new Error("Tweet didn't exist!")
-        if (like) throw new Error('You have already liked')
-        return Like.create({
-          userId: getUser(req).id,
-          tweetId
-        })
-      })
-      .then(() => res.redirect('back'))
-      .catch(err => next(err))
-  },
-  removeLike: (req, res, next) => {
-    return Like.findOne({
-      where: {
-        userId: getUser(req).id,
-        tweetId: req.params.tweetId
+      if (!like) {
+        return res.redirect('back')
       }
-    })
-      .then(like => {
-        if (!like) throw new Error("You haven't liked ")
-        return like.destroy()
-      })
-      .then(() => res.redirect('back'))
-      .catch(err => next(err))
+      await like.destroy()
+      return res.redirect('back')
+    } catch (err) {
+      next(err)
+    }
   },
   addFollowing: async (req, res, next) => {
     try {
@@ -241,7 +252,7 @@ const userController = {
     try {
       const followship = await Followship.findOne({
         where: {
-          followerId: getUser(req).id,
+          followerId: getUser(req) && getUser(req).id,
           followingId: req.params.id
         }
       })

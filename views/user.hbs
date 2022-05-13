@@ -23,11 +23,11 @@
   {{!-- 延伸挑戰功能： Like按鈕icon 加入判斷式: 是否已經like過了 --}}
     {{#if isLiked}}
       <form action="/tweets/{{ this.id }}/unlike" method="POST">
-        <button type="submit">移除 LIKE icon</button>
+        <button type="submit">移除 LIKE icon {{ this.id }}</button>
       </form>
     {{else}}
       <form action="/tweets/{{ this.id }}/like" method="POST">
-        <button type="submit">加入 LIKE icon</button>
+        <button type="submit">加入 LIKE icon{{ this.id }}</button>
       </form>
     {{/if}}
 

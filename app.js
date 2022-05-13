@@ -1,5 +1,5 @@
 const express = require('express')
-const { getUser } = require('./_helpers')
+const helpers = require('./_helpers')
 const handlebars = require('express-handlebars')
 const handlebarsHelpers = require('./helpers/handlebars-helpers')
 const flash = require('connect-flash')
@@ -37,8 +37,8 @@ app.use((req, res, next) => {
   res.locals.warning_msg = req.flash('warning_msg')
   res.locals.error_messages = req.flash('error_messages')
   res.locals.error = req.flash('error')
-  res.locals.user = getUser(req)
-  res.locals.logInUser = getUser(req)
+  res.locals.user = helpers.getUser(req)
+  res.locals.logInUser = helpers.getUser(req)
   next()
 })
 

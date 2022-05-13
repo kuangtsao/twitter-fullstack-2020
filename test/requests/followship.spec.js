@@ -15,18 +15,22 @@ describe('# followship request', () => {
     describe('when user1 wants to follow user2', () => {
       before(async () => {
         // 模擬登入資料
-        this.ensureAuthenticated = sinon.stub(
-          helpers, 'ensureAuthenticated'
-        ).returns(true)
-        this.getUser = sinon.stub(
-          helpers, 'getUser'
-        ).returns({ id: 1, Followings: [] })
+        this.ensureAuthenticated = sinon
+          .stub(helpers, 'ensureAuthenticated')
+          .returns(true)
+        this.getUser = sinon
+          .stub(helpers, 'getUser')
+          .returns({ id: 1, Followings: [] })
 
         // 在測試資料庫中，新增 mock 資料
-        await db.sequelize.query('SET FOREIGN_KEY_CHECKS = 0', null, { raw: true })
+        await db.sequelize.query('SET FOREIGN_KEY_CHECKS = 0', null, {
+          raw: true
+        })
         await db.User.destroy({ where: {}, truncate: true, force: true })
         await db.Followship.destroy({ where: {}, truncate: true, force: true })
-        await db.sequelize.query('SET FOREIGN_KEY_CHECKS = 1', null, { raw: true })
+        await db.sequelize.query('SET FOREIGN_KEY_CHECKS = 1', null, {
+          raw: true
+        })
         await db.User.create({})
         await db.User.create({})
       })
@@ -83,10 +87,14 @@ describe('# followship request', () => {
         // 清除驗證資料以及測試 db 資料
         this.ensureAuthenticated.restore()
         this.getUser.restore()
-        await db.sequelize.query('SET FOREIGN_KEY_CHECKS = 0', null, { raw: true })
+        await db.sequelize.query('SET FOREIGN_KEY_CHECKS = 0', null, {
+          raw: true
+        })
         await db.User.destroy({ where: {}, truncate: true, force: true })
         await db.Followship.destroy({ where: {}, truncate: true, force: true })
-        await db.sequelize.query('SET FOREIGN_KEY_CHECKS = 1', null, { raw: true })
+        await db.sequelize.query('SET FOREIGN_KEY_CHECKS = 1', null, {
+          raw: true
+        })
       })
     })
   })
@@ -96,17 +104,21 @@ describe('# followship request', () => {
     describe('when user1 wants to unfollow user2', () => {
       before(async () => {
         // 模擬驗證資料
-        this.ensureAuthenticated = sinon.stub(
-          helpers, 'ensureAuthenticated'
-        ).returns(true)
-        this.getUser = sinon.stub(
-          helpers, 'getUser'
-        ).returns({ id: 1, Followings: [] })
+        this.ensureAuthenticated = sinon
+          .stub(helpers, 'ensureAuthenticated')
+          .returns(true)
+        this.getUser = sinon
+          .stub(helpers, 'getUser')
+          .returns({ id: 1, Followings: [] })
         // 在測試資料庫中，新增 mock 資料
-        await db.sequelize.query('SET FOREIGN_KEY_CHECKS = 0', null, { raw: true })
+        await db.sequelize.query('SET FOREIGN_KEY_CHECKS = 0', null, {
+          raw: true
+        })
         await db.User.destroy({ where: {}, truncate: true, force: true })
         await db.Followship.destroy({ where: {}, truncate: true, force: true })
-        await db.sequelize.query('SET FOREIGN_KEY_CHECKS = 1', null, { raw: true })
+        await db.sequelize.query('SET FOREIGN_KEY_CHECKS = 1', null, {
+          raw: true
+        })
         await db.User.create({})
         await db.User.create({})
         await db.Followship.create({ followerId: 1, followingId: 2 })
@@ -139,10 +151,14 @@ describe('# followship request', () => {
         // 清除驗證資料以及測試 db 資料
         this.ensureAuthenticated.restore()
         this.getUser.restore()
-        await db.sequelize.query('SET FOREIGN_KEY_CHECKS = 0', null, { raw: true })
+        await db.sequelize.query('SET FOREIGN_KEY_CHECKS = 0', null, {
+          raw: true
+        })
         await db.User.destroy({ where: {}, truncate: true, force: true })
         await db.Followship.destroy({ where: {}, truncate: true, force: true })
-        await db.sequelize.query('SET FOREIGN_KEY_CHECKS = 1', null, { raw: true })
+        await db.sequelize.query('SET FOREIGN_KEY_CHECKS = 1', null, {
+          raw: true
+        })
       })
     })
   })

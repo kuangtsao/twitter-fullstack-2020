@@ -1,7 +1,6 @@
 const bcrypt = require('bcryptjs')
 const { Tweet, User, Like, Reply, Followship } = require('../models')
-const helpers = require('../_helpers')
-
+const { getUser } = require('../_helpers')
 const userController = {
   signUpPage: async (req, res) => {
     try {
@@ -98,7 +97,7 @@ const userController = {
         ]
       })
       if (!paramsUser) throw new Error("user didn't exist!")
-      const isFollowed = helpers.getUser(req).Followings && helpers.getUser(req).Followings.some(f => f.id === Number(userId))
+      const isFollowed = getUser(req).Followings && getUser(req).Followings.some(f => f.id === Number(userId))
       return res.render('user', {
         user: paramsUser.toJSON(),
         isFollowed
@@ -169,7 +168,7 @@ const userController = {
       Tweet.findByPk(tweetId),
       Like.findOne({
         where: {
-          userId: helpers.getUser(req).id,
+          userId: getUser(req).id,
           tweetId
         }
       })
@@ -178,7 +177,7 @@ const userController = {
         if (!tweet) throw new Error("Tweet didn't exist!")
         if (like) throw new Error('You have already liked')
         return Like.create({
-          userId: helpers.getUser(req).id,
+          userId: getUser(req).id,
           tweetId
         })
       })
@@ -188,7 +187,7 @@ const userController = {
   removeLike: (req, res, next) => {
     return Like.findOne({
       where: {
-        userId: helpers.getUser(req).id,
+        userId: getUser(req).id,
         tweetId: req.params.tweetId
       }
     })
@@ -202,7 +201,7 @@ const userController = {
   addFollowing: async (req, res, next) => {
     try {
       const id = req.params.id || req.body.id
-      const loginUserId = helpers.getUser(req) && helpers.getUser(req).id
+      const loginUserId = getUser(req) && getUser(req).id
 
       if (id === loginUserId.toString()) {
         return res.redirect(200, 'back')
@@ -232,7 +231,7 @@ const userController = {
     try {
       const followship = await Followship.findOne({
         where: {
-          followerId: helpers.getUser(req).id,
+          followerId: getUser(req).id,
           followingId: req.params.id
         }
       })
@@ -259,7 +258,7 @@ const userController = {
       })
       const data = currentUser.toJSON().Followings.map(cf => ({
         ...cf,
-        isFollowed: helpers.getUser(req) && helpers.getUser(req).Followers && helpers.getUser(req).Followers.some(f => f.id === cf.id)
+        isFollowed: getUser(req) && getUser(req).Followers && getUser(req).Followers.some(f => f.id === cf.id)
       }))
       return res.render('followings', {
         currentUser: currentUser.toJSON(),
@@ -287,7 +286,7 @@ const userController = {
       })
       const data = currentUser.toJSON().Followers.map(cf => ({
         ...cf,
-        isFollowed: helpers.getUser(req) && helpers.getUser(req).Followings && helpers.getUser(req).Followings.some(f => f.id === cf.id)
+        isFollowed: getUser(req) && getUser(req).Followings && getUser(req).Followings.some(f => f.id === cf.id)
       }))
       return res.render('followers', {
         currentUser: currentUser.toJSON(),

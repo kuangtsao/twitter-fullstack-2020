@@ -87,13 +87,13 @@ const userController = {
         include: [
           {
             model: Tweet,
-            order: [
-              ['updatedAt', 'DESC']
-            ],
             include: [{ model: Reply, attributes: ['id'] }, { model: Like, attributes: ['id'] }]
           },
           { model: User, as: 'Followings', attributes: ['id'] },
           { model: User, as: 'Followers', attributes: ['id'] }
+        ],
+        order: [
+          [Tweet, 'createdAt', 'DESC']
         ]
       })
       if (!paramsUser) throw new Error("user didn't exist!")
@@ -111,12 +111,22 @@ const userController = {
       const userId = req.params.id
       const user = await User.findByPk(userId, {
         include: [
-          { model: Like, include: [{ model: Tweet, include: [Reply] }] },
+          {
+            model: Like,
+            include: [
+              {
+                model: Tweet,
+                include: [
+                  { model: User, attributes: ['id', 'name', 'account'] },
+                  { model: Reply, attributes: ['id'] }
+                ]
+              }]
+          },
           { model: User, as: 'Followings', attributes: ['id'] },
           { model: User, as: 'Followers', attributes: ['id'] }
         ],
         order: [
-          ['updatedAt', 'DESC']
+          [Like, 'createdAt', 'DESC']
         ]
       })
       if (!user) throw new Error("user didn't exist!")

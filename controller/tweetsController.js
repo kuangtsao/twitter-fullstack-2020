@@ -80,11 +80,8 @@ const tweetsController = {
     }
   },
   addReply: async (req, res, next) => {
-    console.log('tweetController.addReply')
     const TweetId = Number(req.params.tweetId)
-    console.log(TweetId)
     const UserId = getUser(req) && getUser(req).id
-    console.log(UserId)
     const { comment } = req.body
 
     try {

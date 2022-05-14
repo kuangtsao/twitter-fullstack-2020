@@ -315,10 +315,14 @@ const userController = {
 
     if (userId !== Number(req.params.id)) {
       req.flash('error_messages', '只能改自己的資料！')
-      return res.redirect(`/users/${userId}/edit`)
+      return res.redirect(`/users/${userId}/setting`)
     }
-    return User.findByPk(userId, { raw: true })
-      .then(user => res.render('editUserFake', { user }))
+
+    return User.findByPk(userId, {
+      attributes: ['id', 'name', 'account', 'email'],
+      raw: true
+    })
+      .then(user => { res.render('setUser', { user }) })
       .catch(err => next(err))
   },
   editUser: (req, res, next) => {

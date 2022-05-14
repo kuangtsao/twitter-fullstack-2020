@@ -279,6 +279,7 @@ const userController = {
         ...cf,
         isFollowed: helpers.getUser(req) && helpers.getUser(req).Followers && helpers.getUser(req).Followers.some(f => f.id === cf.id)
       }))
+      console.log('data', data)
       return res.render('followings', {
         currentUser: currentUser.toJSON(),
         followings: data,

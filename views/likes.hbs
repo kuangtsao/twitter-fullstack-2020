@@ -16,7 +16,7 @@
     <span class="blockquote-footer">{{ this.Tweet.Replies.length }}回覆數</span>
     <p></p>
       {{!-- 預留: 單一tweet連結  --}}
-    <form action="/tweets/{{ this.id }}" method="GET">
+    <form action="/tweets/{{ this.id }}/replies" method="GET">
       <button type="submit">回覆icon</button>
     </form>
       <form action="/tweets/{{ this.Tweet.id }}/unlike" method="POST">

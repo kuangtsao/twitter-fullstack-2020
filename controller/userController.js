@@ -131,13 +131,14 @@ const userController = {
         ]
       })
       if (!user) throw new Error("user didn't exist!")
-      const tweets = user.toJSON().Likes.map(tweet => ({
-        ...tweet,
-        isLiked: true
-      }))
+      // isLiked 判斷式先保留
+      // const tweets = user.toJSON().Likes.map(tweet => ({
+      //   ...tweet,
+      //   isLiked: true
+      // }))
       return res.render('likes', {
         user: user.toJSON(),
-        tweets
+        tweets: user.toJSON().Likes
       })
     } catch (err) {
       next(err)
@@ -180,6 +181,15 @@ const userController = {
   addLike: async (req, res, next) => {
     try {
       const { tweetId } = req.params
+      const like = await Like.findOne({
+        where: {
+          userId: helpers.getUser(req) && helpers.getUser(req).id,
+          tweetId: tweetId
+        }
+      })
+      if (like) {
+        return res.redirect('back')
+      }
       await Like.create({
         UserId: helpers.getUser(req) && helpers.getUser(req).id,
         TweetId: tweetId

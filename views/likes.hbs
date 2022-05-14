@@ -19,7 +19,11 @@
     <form action="/tweets/{{ this.id }}" method="GET">
       <button type="submit">回覆icon</button>
     </form>
+      <form action="/tweets/{{ this.Tweet.id }}/unlike" method="POST">
+        <button type="submit">移除 LIKE icon</button>
+      </form>
 
+{{!-- 
     {{#if isLiked}}
       <form action="/tweets/{{ this.Tweet.id }}/unlike" method="POST">
         <button type="submit">移除 LIKE icon</button>
@@ -28,7 +32,7 @@
       <form action="/tweets/{{ this.Tweet.id }}/like" method="POST">
         <button type="submit">加入 LIKE icon</button>
       </form>
-    {{/if}}
+    {{/if}} --}}
   <hr />
 {{/each}}
   </div>

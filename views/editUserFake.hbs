@@ -3,10 +3,8 @@
     <a href="javascript:history.back()">回到上一頁</a>
   </button>
   <h4>編輯個人資料</h4>
-  <button class="btn btn-block mt-4" style="border-radius: 50px; background-color:#FF6600; color: white; width:356px; 
-            height: 46px;padding: 8px 24px;" type="submit">儲存</button>
 </div>
-<form action="/users/{{ user.id }}/edit_method=PUT" method="post">
+<form action="/users/{{ user.id }}/edit?_method=PUT" method="post">
   <div class="form-group">
     <div class="form-row mb-3">
       <label class="form-label" for="cover">背景</label>
@@ -26,5 +24,6 @@
     <label class="form-label" for="name">自我介紹</label>
     <textarea class="form-control" name="name" id="name" row="5" placeholder="輸入自介" required>{{ user.introduction }}</textarea>
   </div>
+  <button class="btn btn-block mt-4" style="border-radius: 50px; background-color:#FF6600; color: white; width:356px; height: 46px;padding: 8px 24px;" type="submit">儲存</button>
 </form>
 

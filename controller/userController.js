@@ -298,6 +298,32 @@ const userController = {
     } catch (err) {
       next(err)
     }
+  },
+  editUserFakePage: (req, res, next) => {
+    const userId = helpers.getUser(req) && helpers.getUser(req).id
+
+    if (userId !== Number(req.params.id)) {
+      req.flash('error_messages', '只能改自己的資料！')
+      return res.redirect(`/users/${userId}/setting`)
+    }
+    return User.findByPk(userId, { raw: true })
+      .then(user => res.render('editUserFake', { user }))
+      .catch(err => next(err))
+  },
+  editUserPage: (req, res, next) => {
+    const userId = helpers.getUser(req) && helpers.getUser(req).id
+
+    if (userId !== Number(req.params.id)) {
+      req.flash('error_messages', '只能改自己的資料！')
+      return res.redirect(`/users/${userId}/edit`)
+    }
+    return User.findByPk(userId, { raw: true })
+      .then(user => res.render('editUserFake', { user }))
+      .catch(err => next(err))
+  },
+  editUser: (req, res, next) => {
+    console.log('userController.editUserPage')
   }
+
 }
 module.exports = userController

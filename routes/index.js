@@ -29,9 +29,9 @@ router.post('/tweets/:tweetId/unlike', authenticated, userController.removeLike)
 
 // 推文
 router.get('/tweets/create', authenticated, tweetController.createFakePage)
-router.get('/tweets/:tweetId/replies', authenticated, tweetController.replyFakePage)
+router.get('/tweets/:tweetId/repliesFake', authenticated, tweetController.replyFakePage)
 router.post('/tweets/:tweetId/replies', authenticated, tweetController.addReply)
-router.get('/tweets/:tweetId', authenticated, tweetController.getTweet)
+router.get('/tweets/:tweetId/replies', authenticated, tweetController.getTweet) // 單一推文回文列表
 router.get('/tweets', authenticated, tweetController.getTweets)
 router.post('/tweets', authenticated, tweetController.addTweet)
 

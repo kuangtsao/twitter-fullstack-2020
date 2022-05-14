@@ -147,22 +147,26 @@ const userController = {
     try {
       const userId = req.params.id
       const user = await User.findByPk(userId, {
+        attributes: ['id', 'name', 'avatar', 'account', 'cover', 'introduction'],
         include: [
           {
             model: Reply,
+            attributes: ['comment', 'createdAt'],
             include: [{
               model: Tweet,
+              attributes: ['description'],
               include: [{
                 model: User,
-                attributes: ['name']
+                attributes: ['id', 'account']
               }]
             }]
           },
+          { model: Tweet, attributes: ['description', 'createdAt'], order: ['createdAt', 'ASC'] },
           { model: User, as: 'Followings', attributes: ['id'] },
           { model: User, as: 'Followers', attributes: ['id'] }
         ],
         order: [
-          [Reply, 'updatedAt', 'DESC']
+          [Reply, 'createdAt', 'DESC']
         ]
       })
       if (!user) throw new Error("user didn't exist!")

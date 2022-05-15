@@ -1,6 +1,7 @@
 const bcrypt = require('bcryptjs')
 const { Tweet, User, Like, Reply, Followship } = require('../models')
 const helpers = require('../_helpers')
+const { imgurFileHandler } = require('../helpers/file-helpers')
 
 const userController = {
   signUpPage: async (req, res) => {
@@ -327,7 +328,6 @@ const userController = {
 
       }))
       // console.log('data', data)
-      
       // 右側Top10User
       const users = await User.findAll({
         where: { isAdmin: false },
@@ -375,7 +375,6 @@ const userController = {
           helpers.getUser(req).Followings.some(f => f.id === cf.id)
       }))
 
-      
       // 右側Top10User
       const users = await User.findAll({
         where: { isAdmin: false },
@@ -449,7 +448,7 @@ const userController = {
           'user.email': email
         })
       }
-      // TODO:這邊 email 暫時沒有辦法比對
+      // TODO:這邊 email 暫時沒有辦法比對是否重複
 
       // isEmailExist = await User.findAll({
       //   attributes: ['email'],
@@ -471,7 +470,6 @@ const userController = {
       //   })
       // }
 
-      console.log('檢查錯誤程序')
       const salt = await bcrypt.genSalt(10)
       const hash = await bcrypt.hash(password, salt)
 
@@ -488,9 +486,31 @@ const userController = {
       req.flash('success_msg', '更改成功！')
       return res.redirect('/')
     } else if (req._parsedUrl.pathname.includes('edit')) {
+      // TODO:收背景圖和頭像功能
       console.log('in edit')
+      const { name, introduction } = req.body
+
+      if (!name || !introduction) {
+        req.flash('error_msg', '名字自介都需填入！')
+        return res.render('editUserFake', {
+          'user.name': name,
+          'user.introduction': introduction
+        })
+      }
+
+      await User.update({
+        name,
+        introduction
+      }, {
+        where: {
+          id: helpers.getUser(req).id
+        }
+      })
+      req.flash('success_msg', '更改成功！')
+      return res.redirect(`/users/${helpers.getUser(req).id}`)
     } else {
       console.log('you want to do something fishy?')
+      return res.redirect('/')
     }
   }
 

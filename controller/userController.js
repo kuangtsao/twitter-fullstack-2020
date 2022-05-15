@@ -343,16 +343,18 @@ const userController = {
       if (errors.length) {
         return res.render('setUser', {
           errors,
-          user.account: account,
-          user.name: name,
-          user.email: email
+          'user.account': account,
+          'user.name': name,
+          'user.email': email
         })
       }
+      TODO:這邊 email 暫時沒有辦法比對
+
       isEmailExist = await User.findAll({
         attributes: ['email'],
         where: {
           authorId: {
-            [Op.eq]: 2
+            [Op.eq]: email
           }
         }
       })
@@ -361,15 +363,27 @@ const userController = {
         errors.push({ message: 'Email 已被註冊！'})
         return res.render('setUser', {
           errors,
-          user.account: account,
-          user.name: name,
-          user.email: email
+          'user.account': account,
+          'user.name': name,
+          'user.email': email
         })
       }
 
       console.log('檢查錯誤程序')
+      salt = await bcrypt.genSalt(10)
+      hash = await bcrypt.hash(password, salt)
+
+      await User.update({
+        account, 
+        name, 
+        email, 
+        password: hash
+      })
+      req.flash('success_msg', '更改成功！')
+      return res.redirect('/')
     } else if (req._parsedUrl.pathname.includes('setting')) {
       console.log('in setting')
+      
     } else {
       console.log('you want to do something fishy?')
     }

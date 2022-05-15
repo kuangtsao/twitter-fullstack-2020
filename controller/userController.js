@@ -331,14 +331,14 @@ const userController = {
     // console.log(req._parsedUrl.pathname)
     const errors = []
 
-    if (req._parsedUrl.pathname.includes('edit')) {
-      console.log('in edit')
+    if (req._parsedUrl.pathname.includes('setting')) {
+      console.log('in setting')
       const { account, name, email, password, checkPassword } = req.body
-      if (!account || !name || !email || password || checkPassword) {
+      if (!account || !name || !email || !password || !checkPassword) {
         errors.push({ message: '以下欄位都需要填入！' })
       }
-      if (password !== checkPassword) {
-        errors.push({ message: '密碼與確認密碼不相符！'})
+      if (Number(password) !== Number(checkPassword)) {
+        errors.push({ message: '密碼與確認密碼不相符！' })
       }
       if (errors.length) {
         return res.render('setUser', {
@@ -348,42 +348,46 @@ const userController = {
           'user.email': email
         })
       }
-      TODO:這邊 email 暫時沒有辦法比對
+      // TODO:這邊 email 暫時沒有辦法比對
 
-      isEmailExist = await User.findAll({
-        attributes: ['email'],
-        where: {
-          authorId: {
-            [Op.eq]: email
-          }
-        }
-      })
+      // isEmailExist = await User.findAll({
+      //   attributes: ['email'],
+      //   where: {
+      //     authorId: {
+      //       [Op.eq]: email
+      //     }
+      //   }
+      // })
+      // console.log(isEmailExist)
 
-      if(isEmailExist) {
-        errors.push({ message: 'Email 已被註冊！'})
-        return res.render('setUser', {
-          errors,
-          'user.account': account,
-          'user.name': name,
-          'user.email': email
-        })
-      }
+      // if (isEmailExist) {
+      //   errors.push({ message: 'Email 已被註冊！' })
+      //   return res.render('setUser', {
+      //     errors,
+      //     'user.account': account,
+      //     'user.name': name,
+      //     'user.email': email
+      //   })
+      // }
 
       console.log('檢查錯誤程序')
-      salt = await bcrypt.genSalt(10)
-      hash = await bcrypt.hash(password, salt)
+      const salt = await bcrypt.genSalt(10)
+      const hash = await bcrypt.hash(password, salt)
 
       await User.update({
-        account, 
-        name, 
-        email, 
+        account,
+        name,
+        email,
         password: hash
+      }, {
+        where: {
+          id: helpers.getUser(req).id
+        }
       })
       req.flash('success_msg', '更改成功！')
       return res.redirect('/')
-    } else if (req._parsedUrl.pathname.includes('setting')) {
-      console.log('in setting')
-      
+    } else if (req._parsedUrl.pathname.includes('edit')) {
+      console.log('in edit')
     } else {
       console.log('you want to do something fishy?')
     }

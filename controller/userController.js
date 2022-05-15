@@ -87,17 +87,21 @@ const userController = {
         include: [
           {
             model: Tweet,
-            include: [{ model: Reply, attributes: ['id'] }, { model: Like, attributes: ['id'] }]
+            include: [
+              { model: Reply, attributes: ['id'] },
+              { model: Like, attributes: ['id'] }
+            ]
           },
           { model: User, as: 'Followings', attributes: ['id'] },
           { model: User, as: 'Followers', attributes: ['id'] }
         ],
-        order: [
-          [Tweet, 'createdAt', 'DESC']
-        ]
+        order: [[Tweet, 'createdAt', 'DESC']]
       })
       if (!paramsUser) throw new Error("user didn't exist!")
-      const isFollowed = helpers.getUser(req) && helpers.getUser(req).Followings && helpers.getUser(req).Followings.some(f => f.id === Number(userId))
+      const isFollowed =
+        helpers.getUser(req) &&
+        helpers.getUser(req).Followings &&
+        helpers.getUser(req).Followings.some(f => f.id === Number(userId))
       // console.log('paramsUser.toJSON()', paramsUser.toJSON())
       return res.render('user', {
         user: paramsUser.toJSON(),
@@ -122,14 +126,13 @@ const userController = {
                   { model: User, attributes: ['id', 'name', 'account'] },
                   { model: Reply, attributes: ['id'] }
                 ]
-              }]
+              }
+            ]
           },
           { model: User, as: 'Followings', attributes: ['id'] },
           { model: User, as: 'Followers', attributes: ['id'] }
         ],
-        order: [
-          [Like, 'createdAt', 'DESC']
-        ]
+        order: [[Like, 'createdAt', 'DESC']]
       })
       if (!user) throw new Error("user didn't exist!")
       // isLiked 判斷式先保留
@@ -139,7 +142,8 @@ const userController = {
       // }))
       return res.render('likes', {
         user: user.toJSON(),
-        tweets: user.toJSON().Likes
+        tweets: user.toJSON().Likes,
+        page: 'user'
       })
     } catch (err) {
       next(err)
@@ -149,31 +153,45 @@ const userController = {
     try {
       const userId = req.params.id
       const user = await User.findByPk(userId, {
-        attributes: ['id', 'name', 'avatar', 'account', 'cover', 'introduction'],
+        attributes: [
+          'id',
+          'name',
+          'avatar',
+          'account',
+          'cover',
+          'introduction'
+        ],
         include: [
           {
             model: Reply,
             attributes: ['comment', 'createdAt'],
-            include: [{
-              model: Tweet,
-              attributes: ['description'],
-              include: [{
-                model: User,
-                attributes: ['id', 'account']
-              }]
-            }]
+            include: [
+              {
+                model: Tweet,
+                attributes: ['description'],
+                include: [
+                  {
+                    model: User,
+                    attributes: ['id', 'account']
+                  }
+                ]
+              }
+            ]
           },
-          { model: Tweet, attributes: ['description', 'createdAt'], order: ['createdAt', 'ASC'] },
+          {
+            model: Tweet,
+            attributes: ['description', 'createdAt'],
+            order: ['createdAt', 'ASC']
+          },
           { model: User, as: 'Followings', attributes: ['id'] },
           { model: User, as: 'Followers', attributes: ['id'] }
         ],
-        order: [
-          [Reply, 'createdAt', 'DESC']
-        ]
+        order: [[Reply, 'createdAt', 'DESC']]
       })
       if (!user) throw new Error("user didn't exist!")
       return res.render('replies', {
-        user: user.toJSON()
+        user: user.toJSON(),
+        page: 'user'
       })
     } catch (err) {
       next(err)
@@ -287,7 +305,8 @@ const userController = {
       return res.render('followings', {
         currentUser: currentUser.toJSON(),
         followings: data,
-        currentUserId
+        currentUserId,
+        page: 'user'
       })
     } catch (err) {
       next(err)
@@ -318,7 +337,8 @@ const userController = {
       return res.render('followers', {
         currentUser: currentUser.toJSON(),
         followers: data,
-        currentUserId
+        currentUserId,
+        page: 'user'
       })
     } catch (err) {
       next(err)

@@ -1,7 +1,7 @@
 <div class="row align-items-start">
   {{> left}}
   <div class="col-6">
-    <form action="/user/{{ user.id }}/setting" method="POST">
+    <form action="/users/{{ user.id }}/setting?_method=PUT" method="POST">
       <div class="form-group">
         <input type="text" name="account" class="form-control font-weight-bold" placeholder="帳號"
           value="{{ user.account }}"

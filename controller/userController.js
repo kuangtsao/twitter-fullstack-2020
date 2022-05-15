@@ -191,7 +191,8 @@ const userController = {
         user: user.toJSON(),
         tweets: user.toJSON().Likes,
         isFollowed,
-        topUsers
+        topUsers,
+        page: 'user'
       })
     } catch (err) {
       next(err)
@@ -267,7 +268,8 @@ const userController = {
       return res.render('replies', {
         user: user.toJSON(),
         isFollowed,
-        topUsers
+        topUsers,
+        page: 'user'
       })
     } catch (err) {
       next(err)
@@ -406,7 +408,8 @@ const userController = {
         currentUser: currentUser.toJSON(),
         followings: data,
         currentUserId,
-        topUsers
+        topUsers,
+        page: 'user'
       })
     } catch (err) {
       next(err)
@@ -462,7 +465,8 @@ const userController = {
         currentUser: currentUser.toJSON(),
         followers: data,
         currentUserId,
-        topUsers
+        topUsers,
+        page: 'user'
       })
     } catch (err) {
       next(err)

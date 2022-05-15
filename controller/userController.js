@@ -327,12 +327,47 @@ const userController = {
   },
   editUser: async (req, res, next) => {
     console.log('userController.editUserPage')
-    console.log(req.body)
-    console.log(req._parsedUrl.pathname)
+    // console.log(req.body)
+    // console.log(req._parsedUrl.pathname)
     const errors = []
 
     if (req._parsedUrl.pathname.includes('edit')) {
       console.log('in edit')
+      const { account, name, email, password, checkPassword } = req.body
+      if (!account || !name || !email || password || checkPassword) {
+        errors.push({ message: '以下欄位都需要填入！' })
+      }
+      if (password !== checkPassword) {
+        errors.push({ message: '密碼與確認密碼不相符！'})
+      }
+      if (errors.length) {
+        return res.render('setUser', {
+          errors,
+          user.account: account,
+          user.name: name,
+          user.email: email
+        })
+      }
+      isEmailExist = await User.findAll({
+        attributes: ['email'],
+        where: {
+          authorId: {
+            [Op.eq]: 2
+          }
+        }
+      })
+
+      if(isEmailExist) {
+        errors.push({ message: 'Email 已被註冊！'})
+        return res.render('setUser', {
+          errors,
+          user.account: account,
+          user.name: name,
+          user.email: email
+        })
+      }
+
+      console.log('檢查錯誤程序')
     } else if (req._parsedUrl.pathname.includes('setting')) {
       console.log('in setting')
     } else {

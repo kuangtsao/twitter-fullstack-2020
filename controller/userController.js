@@ -1,6 +1,5 @@
 const bcrypt = require('bcryptjs')
 const { Tweet, User, Like, Reply, Followship } = require('../models')
-const { Op } = require('sequelize')
 const helpers = require('../_helpers')
 
 const userController = {
@@ -9,7 +8,7 @@ const userController = {
       return res.render('signup', { status: 200 })
     } catch (err) {
       res.status(302)
-      console.log('err')
+      // console.log('err')
       return res.redirect('back')
     }
   },
@@ -66,7 +65,7 @@ const userController = {
       res.redirect('/signin')
     } catch (err) {
       res.status(302)
-      console.log('err')
+      // console.log('err')
       return res.redirect('back')
     }
   },
@@ -89,20 +88,37 @@ const userController = {
         include: [
           {
             model: Tweet,
-            order: [
-              ['updatedAt', 'DESC']
-            ],
             include: [{ model: Reply, attributes: ['id'] }, { model: Like, attributes: ['id'] }]
           },
           { model: User, as: 'Followings', attributes: ['id'] },
           { model: User, as: 'Followers', attributes: ['id'] }
+        ],
+        order: [
+          [Tweet, 'createdAt', 'DESC']
         ]
       })
       if (!paramsUser) throw new Error("user didn't exist!")
-      const isFollowed = helpers.getUser(req).Followings && helpers.getUser(req).Followings.some(f => f.id === Number(userId))
+      const isFollowed = helpers.getUser(req) && helpers.getUser(req).Followings && helpers.getUser(req).Followings.some(f => f.id === Number(userId))
+
+      // 右側Top10User
+      const users = await User.findAll({
+        where: { isAdmin: false },
+        attributes: ['id', 'name', 'account', 'avatar'],
+        include: { model: User, as: 'Followers' }
+      })
+      const topUsers = users.map(user => { return user.get({ plain: true }) }).map(u => {
+        return {
+          ...u,
+          Followers: u.Followers.length,
+          isFollowed: helpers.getUser(req) && helpers.getUser(req).Followings && helpers.getUser(req).Followings.some(f => f.id === Number(u.id))
+        }
+      }).sort((a, b) => b.Followers - a.Followers).slice(0, 10)
+
       return res.render('user', {
         user: paramsUser.toJSON(),
-        isFollowed
+        isFollowed,
+        topUsers,
+        page: 'user'
       })
     } catch (err) {
       next(err)
@@ -113,22 +129,45 @@ const userController = {
       const userId = req.params.id
       const user = await User.findByPk(userId, {
         include: [
-          { model: Like, include: [{ model: Tweet, include: [Reply] }] },
+          {
+            model: Like,
+            include: [
+              {
+                model: Tweet,
+                include: [
+                  { model: User, attributes: ['id', 'name', 'account'] },
+                  { model: Reply, attributes: ['id'] }
+                ]
+              }]
+          },
           { model: User, as: 'Followings', attributes: ['id'] },
           { model: User, as: 'Followers', attributes: ['id'] }
         ],
         order: [
-          ['updatedAt', 'DESC']
+          [Like, 'createdAt', 'DESC']
         ]
       })
       if (!user) throw new Error("user didn't exist!")
-      const tweets = user.toJSON().Likes.map(tweet => ({
-        ...tweet,
-        isLiked: true
-      }))
+      const isFollowed = helpers.getUser(req) && helpers.getUser(req).Followings && helpers.getUser(req).Followings.some(f => f.id === Number(userId))
+
+      // 右側topUsers, sort by跟隨者follower數量 & isFollowed 按鈕
+      const users = await User.findAll({
+        where: { isAdmin: false },
+        attributes: ['id', 'name', 'account', 'avatar'],
+        include: { model: User, as: 'Followers' }
+      })
+      const topUsers = users.map(user => { return user.get({ plain: true }) }).map(u => {
+        return {
+          ...u,
+          Followers: u.Followers.length,
+          isFollowed: helpers.getUser(req) && helpers.getUser(req).Followings && helpers.getUser(req).Followings.some(f => f.id === Number(u.id))
+        }
+      }).sort((a, b) => b.Followers - a.Followers).slice(0, 10)
       return res.render('likes', {
         user: user.toJSON(),
-        tweets
+        tweets: user.toJSON().Likes,
+        isFollowed,
+        topUsers
       })
     } catch (err) {
       next(err)
@@ -138,67 +177,91 @@ const userController = {
     try {
       const userId = req.params.id
       const user = await User.findByPk(userId, {
+        attributes: ['id', 'name', 'avatar', 'account', 'cover', 'introduction'],
         include: [
           {
             model: Reply,
+            attributes: ['comment', 'createdAt'],
             include: [{
               model: Tweet,
+              attributes: ['description'],
               include: [{
                 model: User,
-                attributes: ['name']
+                attributes: ['id', 'account']
               }]
             }]
           },
+          { model: Tweet, attributes: ['description', 'createdAt'], order: ['createdAt', 'ASC'] },
           { model: User, as: 'Followings', attributes: ['id'] },
           { model: User, as: 'Followers', attributes: ['id'] }
         ],
         order: [
-          [Reply, 'updatedAt', 'DESC']
+          [Reply, 'createdAt', 'DESC']
         ]
       })
       if (!user) throw new Error("user didn't exist!")
+      const isFollowed = helpers.getUser(req) && helpers.getUser(req).Followings && helpers.getUser(req).Followings.some(f => f.id === Number(userId))
+
+      // 右側topUsers, sort by跟隨者follower數量 & isFollowed 按鈕
+      const users = await User.findAll({
+        where: { isAdmin: false },
+        attributes: ['id', 'name', 'account', 'avatar'],
+        include: { model: User, as: 'Followers' }
+      })
+      const topUsers = users.map(user => { return user.get({ plain: true }) }).map(u => {
+        return {
+          ...u,
+          Followers: u.Followers.length,
+          isFollowed: helpers.getUser(req) && helpers.getUser(req).Followings && helpers.getUser(req).Followings.some(f => f.id === Number(u.id))
+        }
+      }).sort((a, b) => b.Followers - a.Followers).slice(0, 10)
       return res.render('replies', {
-        user: user.toJSON()
+        user: user.toJSON(),
+        isFollowed,
+        topUsers
       })
     } catch (err) {
       next(err)
     }
   },
-  addLike: (req, res, next) => {
-    const { tweetId } = req.params
-    return Promise.all([
-      Tweet.findByPk(tweetId),
-      Like.findOne({
+  addLike: async (req, res, next) => {
+    try {
+      const { tweetId } = req.params
+      const like = await Like.findOne({
         where: {
-          userId: helpers.getUser(req).id,
-          tweetId
+          userId: helpers.getUser(req) && helpers.getUser(req).id,
+          tweetId: tweetId
         }
       })
-    ])
-      .then(([tweet, like]) => {
-        if (!tweet) throw new Error("Tweet didn't exist!")
-        if (like) throw new Error('You have already liked')
-        return Like.create({
-          userId: helpers.getUser(req).id,
-          tweetId
-        })
-      })
-      .then(() => res.redirect('back'))
-      .catch(err => next(err))
-  },
-  removeLike: (req, res, next) => {
-    return Like.findOne({
-      where: {
-        userId: helpers.getUser(req).id,
-        tweetId: req.params.tweetId
+      if (like) {
+        return res.redirect('back')
       }
-    })
-      .then(like => {
-        if (!like) throw new Error("You haven't liked ")
-        return like.destroy()
+      await Like.create({
+        UserId: helpers.getUser(req) && helpers.getUser(req).id,
+        TweetId: tweetId
       })
-      .then(() => res.redirect('back'))
-      .catch(err => next(err))
+      return res.redirect('back')
+    } catch (err) {
+      next(err)
+    }
+  },
+  removeLike: async (req, res, next) => {
+    try {
+      const { tweetId } = req.params
+      const like = await Like.findOne({
+        where: {
+          userId: helpers.getUser(req) && helpers.getUser(req).id,
+          tweetId: tweetId
+        }
+      })
+      if (!like) {
+        return res.redirect('back')
+      }
+      await like.destroy()
+      return res.redirect('back')
+    } catch (err) {
+      next(err)
+    }
   },
   addFollowing: async (req, res, next) => {
     try {
@@ -233,7 +296,7 @@ const userController = {
     try {
       const followship = await Followship.findOne({
         where: {
-          followerId: helpers.getUser(req).id,
+          followerId: helpers.getUser(req) && helpers.getUser(req).id,
           followingId: req.params.id
         }
       })
@@ -260,12 +323,30 @@ const userController = {
       })
       const data = currentUser.toJSON().Followings.map(cf => ({
         ...cf,
-        isFollowed: helpers.getUser(req) && helpers.getUser(req).Followers && helpers.getUser(req).Followers.some(f => f.id === cf.id)
+        isFollowed: helpers.getUser(req) && helpers.getUser(req).Followers && helpers.getUser(req).Followings.some(f => f.id === cf.id)
+
       }))
+      // console.log('data', data)
+      
+      // 右側Top10User
+      const users = await User.findAll({
+        where: { isAdmin: false },
+        attributes: ['id', 'name', 'account', 'avatar'],
+        include: { model: User, as: 'Followers' }
+      })
+      const topUsers = users.map(user => { return user.get({ plain: true }) }).map(u => {
+        return {
+          ...u,
+          Followers: u.Followers.length,
+          isFollowed: helpers.getUser(req) && helpers.getUser(req).Followings && helpers.getUser(req).Followings.some(f => f.id === Number(u.id))
+        }
+      }).sort((a, b) => b.Followers - a.Followers).slice(0, 10)
+
       return res.render('followings', {
         currentUser: currentUser.toJSON(),
         followings: data,
-        currentUserId
+        currentUserId,
+        topUsers
       })
     } catch (err) {
       next(err)
@@ -288,12 +369,32 @@ const userController = {
       })
       const data = currentUser.toJSON().Followers.map(cf => ({
         ...cf,
-        isFollowed: helpers.getUser(req) && helpers.getUser(req).Followings && helpers.getUser(req).Followings.some(f => f.id === cf.id)
+        isFollowed:
+          helpers.getUser(req) &&
+          helpers.getUser(req).Followings &&
+          helpers.getUser(req).Followings.some(f => f.id === cf.id)
       }))
+
+      
+      // 右側Top10User
+      const users = await User.findAll({
+        where: { isAdmin: false },
+        attributes: ['id', 'name', 'account', 'avatar'],
+        include: { model: User, as: 'Followers' }
+      })
+      const topUsers = users.map(user => { return user.get({ plain: true }) }).map(u => {
+        return {
+          ...u,
+          Followers: u.Followers.length,
+          isFollowed: helpers.getUser(req) && helpers.getUser(req).Followings && helpers.getUser(req).Followings.some(f => f.id === Number(u.id))
+        }
+      }).sort((a, b) => b.Followers - a.Followers).slice(0, 10)
+
       return res.render('followers', {
         currentUser: currentUser.toJSON(),
         followers: data,
-        currentUserId
+        currentUserId,
+        topUsers
       })
     } catch (err) {
       next(err)

@@ -325,8 +325,19 @@ const userController = {
       .then(user => { res.render('setUser', { user }) })
       .catch(err => next(err))
   },
-  editUser: (req, res, next) => {
+  editUser: async (req, res, next) => {
     console.log('userController.editUserPage')
+    console.log(req.body)
+    console.log(req._parsedUrl.pathname)
+    const errors = []
+
+    if (req._parsedUrl.pathname.includes('edit')) {
+      console.log('in edit')
+    } else if (req._parsedUrl.pathname.includes('setting')) {
+      console.log('in setting')
+    } else {
+      console.log('you want to do something fishy?')
+    }
   }
 
 }

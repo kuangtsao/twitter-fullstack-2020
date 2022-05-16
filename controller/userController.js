@@ -432,11 +432,20 @@ const userController = {
       const { account, name, email, password, checkPassword } = req.body
       if (!account || !name || !email || !password || !checkPassword) {
         errors.push({ message: '以下欄位都需要填入！' })
-        return
       }
       if (Number(password) !== Number(checkPassword)) {
         errors.push({ message: '密碼與確認密碼不相符！' })
-        return
+      }
+      if (name.length > 50) {
+        errors.push({ message: '名稱上限為50字！' })
+      }
+      const userEmail = await User.findOne({ where: { email } })
+      const userAccount = await User.findOne({ where: { account } })
+      if (userEmail) {
+        errors.push({ message: '這個 Email 已經存在。' })
+      }
+      if (userAccount) {
+        errors.push({ message: '這個 Account 已經存在。' })
       }
       if (errors.length) {
         return res.render('setUser', {
@@ -446,27 +455,6 @@ const userController = {
           'user.email': email
         })
       }
-      // TODO:這邊 email 暫時沒有辦法比對是否重複
-
-      // isEmailExist = await User.findAll({
-      //   attributes: ['email'],
-      //   where: {
-      //     authorId: {
-      //       [Op.eq]: email
-      //     }
-      //   }
-      // })
-      // console.log(isEmailExist)
-
-      // if (isEmailExist) {
-      //   errors.push({ message: 'Email 已被註冊！' })
-      //   return res.render('setUser', {
-      //     errors,
-      //     'user.account': account,
-      //     'user.name': name,
-      //     'user.email': email
-      //   })
-      // }
 
       const salt = await bcrypt.genSalt(10)
       const hash = await bcrypt.hash(password, salt)

@@ -507,7 +507,7 @@ const userController = {
         if (!account || !name || !email || !password || !checkPassword) {
           errors.push({ message: '以下欄位都需要填入！' })
         }
-        if (Number(password) !== Number(checkPassword)) {
+        if (password !== checkPassword) {
           errors.push({ message: '密碼與確認密碼不相符！' })
         }
         if (name.length > 50) {

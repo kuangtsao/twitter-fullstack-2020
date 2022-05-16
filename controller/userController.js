@@ -32,10 +32,10 @@ const userController = {
       const userEmail = await User.findOne({ where: { email } })
       const userAccount = await User.findOne({ where: { account } })
       if (userEmail) {
-        errors.push({ message: '這個 Email 已經註冊過了。' })
+        errors.push({ message: 'email 已重複註冊！' })
       }
       if (userAccount) {
-        errors.push({ message: '這個 Account 已經註冊過了。' })
+        errors.push({ message: 'account 已重複註冊！ ' })
       }
       if (errors.length) {
         return res.render('signup', {
@@ -58,7 +58,9 @@ const userController = {
           null
         ),
         avatar:
-          'https://icon-library.com/images/default-user-icon/default-user-icon-17.jpg'
+          'https://icon-library.com/images/default-user-icon/default-user-icon-17.jpg',
+        cover:
+          'https://dummyimage.com/600x400/000/fff.jpg&text=%E9%A0%90%E8%A8%AD'
       })
 
       req.flash('success_messages', '註冊成功！')
@@ -85,7 +87,11 @@ const userController = {
   getUser: async (req, res, next) => {
     try {
       const userId = req.params.id
-      const paramsUser = await User.findByPk(userId, {
+      const paramsUser = await User.findOne({
+        where: {
+          id: userId,
+          isAdmin: false
+        },
         include: [
           {
             model: Tweet,
@@ -142,6 +148,7 @@ const userController = {
     try {
       const userId = req.params.id
       const user = await User.findByPk(userId, {
+        where: { isAdmin: false },
         include: [
           {
             model: Like,
@@ -202,7 +209,11 @@ const userController = {
   getReplies: async (req, res, next) => {
     try {
       const userId = req.params.id
-      const user = await User.findByPk(userId, {
+      const user = await User.findOne({
+        where: {
+          id: userId,
+          isAdmin: false
+        },
         attributes: [
           'id',
           'name',
@@ -362,7 +373,11 @@ const userController = {
   getFollowings: async (req, res, next) => {
     try {
       const currentUserId = req.params.id
-      const currentUser = await User.findByPk(currentUserId, {
+      const currentUser = await User.findOne({
+        where: {
+          id: currentUserId,
+          isAdmin: false
+        },
         attributes: ['id', 'name', 'account'],
         include: [
           {
@@ -379,7 +394,7 @@ const userController = {
           helpers.getUser(req) &&
           helpers.getUser(req).Followers &&
           helpers.getUser(req).Followings.some(f => f.id === cf.id)
-      }))
+      })).sort((a, b) => b.Followship.createdAt - a.Followship.createdAt)
 
       // 右側Top10User
       const users = await User.findAll({
@@ -418,7 +433,11 @@ const userController = {
   getFollowers: async (req, res, next) => {
     try {
       const currentUserId = req.params.id
-      const currentUser = await User.findByPk(currentUserId, {
+      const currentUser = await User.findOne({
+        where: {
+          id: currentUserId,
+          isAdmin: false
+        },
         attributes: ['id', 'name', 'account'],
         include: [
           {
@@ -436,7 +455,7 @@ const userController = {
           helpers.getUser(req) &&
           helpers.getUser(req).Followings &&
           helpers.getUser(req).Followings.some(f => f.id === cf.id)
-      }))
+      })).sort((a, b) => b.Followship.createdAt - a.Followship.createdAt)
 
       // 右側Top10User
       const users = await User.findAll({
@@ -495,7 +514,9 @@ const userController = {
       attributes: ['id', 'name', 'account', 'email'],
       raw: true
     })
-      .then(user => { res.render('setUser', { user }) })
+      .then(user => {
+        res.render('setUser', { user })
+      })
       .catch(err => next(err))
   },
   editUser: async (req, res, next) => {
@@ -540,15 +561,15 @@ const userController = {
         const hash = await bcrypt.hash(password, salt)
 
         await User.update({
-          account,
-          name,
-          email,
-          password: hash
-        }, {
-          where: {
-            id: helpers.getUser(req).id
-          }
-        })
+            account,
+            name,
+            email,
+            password: hash
+          }, {
+            where: {
+              id: helpers.getUser(req).id
+            }
+          })
         req.flash('success_messages', '更改成功！')
         return res.redirect('/')
       } else if (req._parsedUrl.pathname.includes('edit')) {
@@ -568,15 +589,16 @@ const userController = {
         // 修改背景圖
         const { file } = req
         const filePath = await imgurFileHandler(file)
-        await User.update({
-          name,
-          introduction,
-          cover: filePath || User.cover
-        }, {
-          where: {
-            id: helpers.getUser(req).id
-          }
-        })
+        await User.update(
+          {
+            name,
+            introduction,
+            cover: filePath || User.cover
+          }, {
+            where: {
+              id: helpers.getUser(req).id
+            }
+          })
         req.flash('sucesss_messages', '更改成功！')
         return res.redirect(`/users/${helpers.getUser(req).id}`)
       } else {

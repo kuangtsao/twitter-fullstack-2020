@@ -504,6 +504,8 @@ const userController = {
 
       if (req._parsedUrl.pathname.includes('setting')) {
         const { account, name, email, password, checkPassword } = req.body
+        console.log(`account: ${account}, email: ${email}`)
+
         if (!account || !name || !email || !password || !checkPassword) {
           errors.push({ message: '以下欄位都需要填入！' })
         }
@@ -513,7 +515,18 @@ const userController = {
         if (name.length > 50) {
           errors.push({ message: '名稱上限為50字！' })
         }
-
+        if (email !== res.locals.logInUser.email) {
+          const checkDuplicate = await User.findOne({ where: { email }, raw: true })
+          if (email === checkDuplicate?.email) {
+            errors.push({ message: '這個 Email 已經有人用了。' })
+          }
+        }
+        if (account !== res.locals.logInUser.account) {
+          const checkDuplicate = await User.findOne({ where: { account }, raw: true })
+          if (account === checkDuplicate?.account) {
+            errors.push({ message: '這個 Account 已經有人用了。' })
+          }
+        }
         if (errors.length) {
           return res.render('setUser', {
             errors,

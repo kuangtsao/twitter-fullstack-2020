@@ -85,8 +85,11 @@ const userController = {
   getUser: async (req, res, next) => {
     try {
       const userId = req.params.id
-      const paramsUser = await User.findByPk(userId, {
-        where: { isAdmin: false },
+      const paramsUser = await User.findOne({
+        where: {
+          id: userId,
+          isAdmin: false
+        },
         include: [
           {
             model: Tweet,
@@ -204,8 +207,11 @@ const userController = {
   getReplies: async (req, res, next) => {
     try {
       const userId = req.params.id
-      const user = await User.findByPk(userId, {
-        where: { isAdmin: false },
+      const user = await User.findOne({
+        where: {
+          id: userId,
+          isAdmin: false
+        },
         attributes: [
           'id',
           'name',
@@ -365,8 +371,11 @@ const userController = {
   getFollowings: async (req, res, next) => {
     try {
       const currentUserId = req.params.id
-      const currentUser = await User.findByPk(currentUserId, {
-        where: { isAdmin: false },
+      const currentUser = await User.findOne({
+        where: {
+          id: currentUserId,
+          isAdmin: false
+        },
         attributes: ['id', 'name', 'account'],
         include: [
           {
@@ -422,8 +431,11 @@ const userController = {
   getFollowers: async (req, res, next) => {
     try {
       const currentUserId = req.params.id
-      const currentUser = await User.findByPk(currentUserId, {
-        where: { isAdmin: false },
+      const currentUser = await User.findOne({
+        where: {
+          id: currentUserId,
+          isAdmin: false
+        },
         attributes: ['id', 'name', 'account'],
         include: [
           {

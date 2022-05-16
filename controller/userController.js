@@ -549,18 +549,20 @@ const userController = {
             id: helpers.getUser(req).id
           }
         })
-        req.flash('success_msg', '更改成功！')
+        req.flash('success_messages', '更改成功！')
         return res.redirect('/')
       } else if (req._parsedUrl.pathname.includes('edit')) {
         // TODO:收背景圖和頭像功能
         const { name, introduction } = req.body
 
-        if (!name || !introduction) {
-          req.flash('error_msg', '名字自介都需填入！')
-          return res.render('editUserFake', {
-            'user.name': name,
-            'user.introduction': introduction
-          })
+        if (!name) {
+          req.flash('error_messages', '名字需要填入！')
+          return res.redirect(`/users/${res.locals.logInUser.id}`)
+        }
+
+        if (introduction.length >= 160) {
+          req.flash('error_messages', '自介不能超過 160 字！')
+          return res.redirect(`/users/${res.locals.logInUser.id}`)
         }
 
         // 修改背景圖
@@ -575,7 +577,7 @@ const userController = {
             id: helpers.getUser(req).id
           }
         })
-        req.flash('success_msg', '更改成功！')
+        req.flash('sucesss_messages', '更改成功！')
         return res.redirect(`/users/${helpers.getUser(req).id}`)
       } else {
         console.log('you want to do something fishy?')

@@ -439,14 +439,16 @@ const userController = {
       if (name.length > 50) {
         errors.push({ message: '名稱上限為50字！' })
       }
-      const userEmail = await User.findOne({ where: { email } })
-      const userAccount = await User.findOne({ where: { account } })
-      if (userEmail) {
-        errors.push({ message: '這個 Email 已經存在。' })
-      }
-      if (userAccount) {
-        errors.push({ message: '這個 Account 已經存在。' })
-      }
+      // TODO:email 與 account 如果與原本相同應該要過；不相同則反查資料庫，沒有則可過
+
+      // const userEmail = await User.findOne({ where: { email } })
+      // const userAccount = await User.findOne({ where: { account } })
+      // if (userEmail) {
+      //   errors.push({ message: '這個 Email 已經存在。' })
+      // }
+      // if (userAccount) {
+      //   errors.push({ message: '這個 Account 已經存在。' })
+      // }
       if (errors.length) {
         return res.render('setUser', {
           errors,

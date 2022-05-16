@@ -426,19 +426,17 @@ const userController = {
       .catch(err => next(err))
   },
   editUser: async (req, res, next) => {
-    console.log('userController.editUserPage')
-    // console.log(req.body)
-    // console.log(req._parsedUrl.pathname)
     const errors = []
 
     if (req._parsedUrl.pathname.includes('setting')) {
-      console.log('in setting')
       const { account, name, email, password, checkPassword } = req.body
       if (!account || !name || !email || !password || !checkPassword) {
         errors.push({ message: '以下欄位都需要填入！' })
+        return
       }
       if (Number(password) !== Number(checkPassword)) {
         errors.push({ message: '密碼與確認密碼不相符！' })
+        return
       }
       if (errors.length) {
         return res.render('setUser', {
@@ -487,7 +485,6 @@ const userController = {
       return res.redirect('/')
     } else if (req._parsedUrl.pathname.includes('edit')) {
       // TODO:收背景圖和頭像功能
-      console.log('in edit')
       const { name, introduction } = req.body
 
       if (!name || !introduction) {

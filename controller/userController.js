@@ -1,7 +1,10 @@
 const bcrypt = require('bcryptjs')
 const { Tweet, User, Like, Reply, Followship } = require('../models')
 const helpers = require('../_helpers')
-const { imgurFileHandler } = require('../helpers/file-helpers')
+
+const imgur = require('imgur')
+const IMGUR_CLIENT_ID = process.env.IMGUR_CLIENT_ID
+imgur.setClientId(IMGUR_CLIENT_ID)
 
 const userController = {
   signUpPage: async (req, res) => {
@@ -522,6 +525,7 @@ const userController = {
   editUser: async (req, res, next) => {
     try {
       const errors = []
+      const loginUserId = helpers.getUser(req) && helpers.getUser(req).id
 
       if (req._parsedUrl.pathname.includes('setting')) {
         const { account, name, email, password, checkPassword } = req.body
@@ -567,40 +571,44 @@ const userController = {
           password: hash
         }, {
           where: {
-            id: helpers.getUser(req).id
+            id: loginUserId
           }
         })
         req.flash('success_messages', '更改成功！')
         return res.redirect('/')
       } else if (req._parsedUrl.pathname.includes('edit')) {
-        // TODO:收背景圖和頭像功能
+        // 修改名字 和 自我介紹內容
         const { name, introduction } = req.body
 
         if (!name) {
           req.flash('error_messages', '名字需要填入！')
-          return res.redirect(`/users/${res.locals.logInUser.id}`)
+          return res.redirect(`/users/${loginUserId}`)
         }
 
         if (introduction.length >= 160) {
           req.flash('error_messages', '自介不能超過 160 字！')
-          return res.redirect(`/users/${res.locals.logInUser.id}`)
+          return res.redirect(`/users/${loginUserId}`)
         }
 
         // 修改背景圖
-        const { file } = req
-        const filePath = await imgurFileHandler(file)
+        const rawFiles = JSON.stringify(req.files)
+        const files = JSON.parse(rawFiles)
+        const imgurCover = await imgur.uploadFile(files.cover[0].path)
+        const imgurAvatar = await imgur.uploadFile(files.avatar[0].path)
+
         await User.update(
           {
             name,
             introduction,
-            cover: filePath || User.cover
+            cover: imgurCover?.link || User.cover,
+            avatar: imgurAvatar?.link || User.avatar
           }, {
             where: {
-              id: helpers.getUser(req).id
+              id: loginUserId
             }
           })
         req.flash('sucesss_messages', '更改成功！')
-        return res.redirect(`/users/${helpers.getUser(req).id}`)
+        return res.redirect(`/users/${loginUserId}`)
       } else {
         console.log('you want to do something fishy?')
         return res.redirect('/')

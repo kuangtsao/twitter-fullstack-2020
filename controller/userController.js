@@ -38,7 +38,7 @@ const userController = {
         errors.push({ message: 'email 已重複註冊！' })
       }
       if (userAccount) {
-        errors.push({ message: 'account 已重複註冊！ ' })
+        errors.push({ message: 'account 已重複註冊！' })
       }
       if (errors.length) {
         return res.render('signup', {
@@ -543,13 +543,13 @@ const userController = {
         if (email !== res.locals.logInUser.email) {
           const checkDuplicate = await User.findOne({ where: { email }, raw: true })
           if (email === checkDuplicate?.email) {
-            errors.push({ message: '這個 Email 已經有人用了。' })
+            errors.push({ message: 'email 已重複註冊！' })
           }
         }
         if (account !== res.locals.logInUser.account) {
           const checkDuplicate = await User.findOne({ where: { account }, raw: true })
           if (account === checkDuplicate?.account) {
-            errors.push({ message: '這個 Account 已經有人用了。' })
+            errors.push({ message: 'account 已重複註冊！' })
           }
         }
         if (errors.length) {

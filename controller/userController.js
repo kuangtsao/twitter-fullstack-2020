@@ -593,8 +593,24 @@ const userController = {
         // 修改背景圖
         const rawFiles = JSON.stringify(req.files)
         const files = JSON.parse(rawFiles)
-        const imgurCover = await imgur.uploadFile(files.cover[0].path)
-        const imgurAvatar = await imgur.uploadFile(files.avatar[0].path)
+        let imgurCover
+        let imgurAvatar
+
+        if (Object.keys(files).length === 0) {
+          imgurCover = 0
+          imgurAvatar = 0
+        } else if (typeof files.cover === 'undefined' && typeof files.avatar !== 'undefined') {
+          // 如果只有更新 avatar
+          imgurCover = 0
+          imgurAvatar = await imgur.uploadFile(files.avatar[0].path)
+        } else if (typeof files.cover !== 'undefined' && typeof files.avatar === 'undefined') {
+          // 如果只有更新 cover
+          imgurAvatar = 0
+          imgurCover = await imgur.uploadFile(files.cover[0].path)
+        } else { // 如果都有更新
+          imgurCover = await imgur.uploadFile(files.cover[0].path)
+          imgurAvatar = await imgur.uploadFile(files.avatar[0].path)
+        }
 
         await User.update(
           {

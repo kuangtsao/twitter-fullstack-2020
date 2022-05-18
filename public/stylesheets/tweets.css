@@ -1,15 +1,18 @@
 /* tweet */
 .pagetitle_card {
+  border-style: hidden;
   position: absolute;
   width: 641px;
   height: 51px;
   left: 0px;
   border-bottom: 1px solid #e6ecf0;
+  border-left: 1px solid #d5d5dc;
+  border-right: 1px solid #d5d5dc;
 }
 
 .pagetitle_title {
   position: absolute;
-  width: 48px;
+  width: 120px;
   height: 26px;
   font-family: "Noto Sans TC";
   font-style: normal;
@@ -77,7 +80,7 @@
   border-radius: 40px;
   color: #ffffff;
   font-weight: bold;
-  margin-left: 550px;
+  margin-left: 500px;
   margin-top: 8px;
 }
 

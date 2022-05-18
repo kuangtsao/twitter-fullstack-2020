@@ -118,7 +118,6 @@ describe('# user request', () => {
           .end(function (err, res) {
             if (err) return done(err)
             // 檢查是否成功取得 User1 的內容
-            console.log(res.body)
             res.body.name.should.equal('User1')
             return done()
           })
@@ -134,6 +133,7 @@ describe('# user request', () => {
           .end(function (err, res) {
             if (err) return done(err)
             // 檢查是否有出現 error 內容
+            console.log(res.body)
             res.body.status.should.equal('error')
             return done()
           })

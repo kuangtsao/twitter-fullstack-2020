@@ -8,6 +8,7 @@ const apiController = {
   editUser: async (req, res, next) => {
     const loginUserId = helpers.getUser(req) && helpers.getUser(req).id
     try {
+      if (Number(req.params.id) !== loginUserId) throw new Error('不可修改其他人資料！')
       const userData = await User.findOne({
         where: {
           id: loginUserId,
@@ -29,10 +30,10 @@ const apiController = {
         avatar: userData.avatar,
         cover: userData.cover,
         account: userData.account,
-        introduction: userData.introduction 
+        introduction: userData.introduction
       })
     } catch (err) {
-      res.status(400).json({ status: 'fail', cause: err })
+      res.json({ status: 'error', cause: err })
       next(err)
     }
   }

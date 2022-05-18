@@ -1,6 +1,7 @@
 {{!-- logo --}}
 <div class="col">
-  <div class="card pagetitle_card">
+  <div class="card pagetitle_card" style="  border-left: 1px solid #d5d5dc;
+  border-right: 1px solid #d5d5dc;">
     <div class="card-body">
       <a href='javascript:history.back()'>
         <i class='fas fa-arrow-left' style="color: black;"></i>
@@ -16,14 +17,15 @@
 </div>
 
 {{!-- 個人資料 --}}
-<div class="card tweets_card">
+<div class="card tweets_card" style=" border-left: 1px solid #d5d5dc;
+  border-right: 1px solid #d5d5dc; ">
   <div class="col">
     <div class="row row-cols-1 row-cols-md-1">
 
-      <div class="card mb-2 mr-1" style="background-color: rgb(247, 247, 247);border-color: white;width: 639px;
+      <div class="card mb-2 mr-1" style="background-color:#fafafb;border-color: #fafafb;width: 641px;
 height: 378px;margin-left:10.5px; margin-top:-131px;">
 
-        <img class="card-img-top" style="width: 639px;
+        <img class="card-img-top" style="width: 641px;
 height: 200px; margin-left:-11px" src="{{ user.cover }}" alt="{{ user.name }}">
 
         <img src="{{ user.avatar }}" class="border-avatar" style="border-radius: 50%; height: 100px; width: 100px;
@@ -118,7 +120,7 @@ height: 200px; margin-left:-11px" src="{{ user.cover }}" alt="{{ user.name }}">
           {{/ifCond}}
         </div>
 
-        <div class="card-body" style="margin-top: -20px;" >
+        <div class="card-body" style="margin-top: -20px;">
 
           <p class="mt-2" style="font-weight: 700;font-size: 18px;line-height: 26px;margin-top:-40px; ">
             {{ user.name }}
@@ -137,11 +139,9 @@ height: 200px; margin-left:-11px" src="{{ user.cover }}" alt="{{ user.name }}">
           <span style="color: #6C757D"><a href="/users/{{ user.id }}/followers"
               style="text-decoration: none;color: #171725;margin-top:-30px"><span>{{
                 user.Followers.length }}位</span></a>跟隨者</span>
+
         </div>
       </div>
     </div>
   </div>
 </div>
-
-
-

@@ -6,8 +6,8 @@ imgur.setClientId(IMGUR_CLIENT_ID)
 
 const apiController = {
   editUser: async (req, res, next) => {
+    const loginUserId = helpers.getUser(req) && helpers.getUser(req).id
     try {
-      const loginUserId = helpers.getUser(req) && helpers.getUser(req).id
       const userData = await User.findOne({
         where: {
           id: loginUserId,
@@ -22,16 +22,17 @@ const apiController = {
           'introduction'
         ]
       })
-      const result = {
+      res.json({
+        status: 'success',
         id: userData.id,
         name: userData.name,
         avatar: userData.avatar,
         cover: userData.cover,
         account: userData.account,
-        introduction: userData.introduction
-      }
-      res.json({ status: 'success', result })
+        introduction: userData.introduction 
+      })
     } catch (err) {
+      res.status(400).json({ status: 'fail', cause: err })
       next(err)
     }
   }

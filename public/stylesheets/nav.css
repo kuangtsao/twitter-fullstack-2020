@@ -106,7 +106,7 @@
 .left_navtitle {
   margin-left: 40px;
   margin-top: -20px;
-  width: 72px;
+  width: 90px;
   height: 26px;
   font-family: "Noto Sans TC";
   font-style: normal;
@@ -116,6 +116,7 @@
   color: #44444f;
   flex: none;
   flex-grow: 0;
+
 }
 
 .left_cardbody1 {
@@ -129,6 +130,7 @@
   height: 26px;
   left: 16px;
   top: 16px;
+
 }
 
 .left_cardbody2 {

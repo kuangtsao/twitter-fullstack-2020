@@ -12,15 +12,9 @@ const apiController = {
       // 修改名字 和 自我介紹內容
       const { name, introduction } = req.body
 
-      if (!name) {
-        req.flash('error_messages', '名字需要填入！')
-        return res.redirect(`/users/${loginUserId}`)
-      }
-
-      if (introduction.length >= 160) {
-        req.flash('error_messages', '自介不能超過 160 字！')
-        return res.redirect(`/users/${loginUserId}`)
-      }
+      if (!name) return res.json({ status: 'error', message: '名字要寫' })
+      if (name.length > 50) return res.json({ status: 'error', message: '名字字數不能超過 50 字' })
+      if (introduction.length >= 160) return res.json({ status: 'error', message: '自介不能超過 160 字' })
 
       // 修改背景圖
       const rawFiles = JSON.stringify(req.files)
@@ -55,8 +49,8 @@ const apiController = {
             id: loginUserId
           }
         })
-      req.flash('sucesss_messages', '更改成功！')
-      return res.redirect(`/users/${loginUserId}`)
+      // req.flash('sucesss_messages', '更改成功！')
+        return res.json({ status: 'success', upadteUser })
     } catch (err) {
       next(err)
     }

@@ -1,0 +1,80 @@
+.profile_introduction {
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+  margin-top: -10px;
+}
+.profilepagetitle_title {
+  position: absolute;
+  width: 200px;
+  height: 24px;
+  top: 16px;
+  font-family: "Noto Sans TC";
+  font-style: normal;
+  font-weight: 700;
+  font-size: 18px;
+  line-height: 26px;
+  color: #171725;
+}
+
+.profile_btn {
+  box-sizing: border-box;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  padding: 8px 16px;
+  width: 128px;
+  height: 40px;
+  background: #ffffff;
+  border: 1px solid #ff6600;
+  border-radius: 50px;
+  flex: none;
+  order: 0;
+  flex-grow: 0;
+  font-family: "Noto Sans TC";
+  font-style: normal;
+  color: #ff6600;
+}
+
+.profilefollowing_btn {
+  box-sizing: border-box;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  padding: 8px 16px;
+  width: 128px;
+  height: 40px;
+  background: #ff6600;
+  border: 1px solid #ff6600;
+  border-radius: 50px;
+  flex: none;
+  flex-grow: 0;
+  font-family: "Noto Sans TC";
+  font-style: normal;
+  font-weight: 400;
+  font-size: 16px;
+  color: #ffffff;
+}
+
+.profilefollower_btn {
+  box-sizing: border-box;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  padding: 8px 16px;
+  width: 128px;
+  height: 40px;
+  background: #ffffff;
+  border: 1px solid #ff6600;
+  border-radius: 50px;
+  flex: none;
+  flex-grow: 0;
+  font-family: "Noto Sans TC";
+  font-style: normal;
+  font-weight: 400;
+  font-size: 16px;
+  color: #ff6600;
+}

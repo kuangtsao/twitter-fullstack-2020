@@ -133,7 +133,6 @@ describe('# user request', () => {
           .end(function (err, res) {
             if (err) return done(err)
             // 檢查是否有出現 error 內容
-            console.log(res.body)
             res.body.status.should.equal('error')
             return done()
           })

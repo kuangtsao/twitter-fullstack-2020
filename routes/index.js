@@ -67,6 +67,7 @@ router.get('/users', authenticated, (req, res) => res.redirect('/tweets'))
 
 // api
 router.get('/api/users/:id', apiController.editUser)
+router.post('/api/users/:id', apiController.putUser)
 
 router.get('/', (req, res) => res.redirect('/tweets'))
 router.use('/', generalErrorHandler)

@@ -54,6 +54,7 @@ const userController = {
         account,
         name,
         email,
+        role: 'user',
         password: bcrypt.hashSync(
           req.body.password,
           bcrypt.genSaltSync(10),
@@ -62,7 +63,7 @@ const userController = {
         avatar:
           'https://icon-library.com/images/default-user-icon/default-user-icon-17.jpg',
         cover:
-          'https://dummyimage.com/600x400/000/fff.jpg&text=%E9%A0%90%E8%A8%AD'
+          'https://dummyimage.com/639x200/000/fff.jpg&text=%E9%A0%90%E8%A8%AD'
       })
 
       req.flash('success_messages', '註冊成功！')

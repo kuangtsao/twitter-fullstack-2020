@@ -186,7 +186,7 @@ const userController = {
         helpers.getUser(req) &&
         helpers.getUser(req).Followings &&
         helpers.getUser(req).Followings.some(f => f.id === Number(userId))
-      console.log('user.toJSON().Likes[0].Tweet', user.toJSON().Likes[0].Tweet)
+      // console.log('user.toJSON().Likes[0].Tweet', user.toJSON().Likes[0].Tweet)
 
       // 右側topUsers, sort by跟隨者follower數量 & isFollowed 按鈕
       const users = await User.findAll({

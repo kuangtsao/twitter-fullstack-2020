@@ -38,7 +38,7 @@
               <p class="popular_cardaccount" style="margin-top:-7px ;">@{{tweet.User.account}}</p>
             </div>
 
-            <a href="/tweets/{{this.id}}/replies" style="text-decoration: none; color: #171725; ">
+            <a style="text-decoration: none; color: #171725; ">
               <p style="width:620px;
             margin-top:70px;margin-left:-12px;">
                 {{tweet.description}}
@@ -120,8 +120,8 @@
                     <div class="modal-body">
                       <div class="media d-flex tweet_cardbody">
                         <div class="popular_imgbody">
-                          <a href="/users/{{this.UserId}}/tweets">
-                            <img src="{{ ../logInUser.avatar }}" class="popular_img" alt="...">
+                          <a href="/users/{{logInUser.id}}/tweets">
+                            <img src="{{ logInUser.avatar }}" class="popular_img" alt="...">
                           </a>
                         </div>
                         <div class="media-body" style="margin-left: 30px;">

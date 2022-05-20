@@ -609,7 +609,7 @@ const userController = {
         }
 
         if (introduction.length >= 160) {
-          req.flash('error_messages', '自介不能超過 160 字！')
+          req.flash('error_messages', '字數超出上限！')
           return res.redirect(`/users/${loginUserId}`)
         }
 

@@ -608,7 +608,7 @@ const userController = {
           return res.redirect(`/users/${loginUserId}`)
         }
 
-        if (introduction.length >= 160) {
+        if (introduction.length >= 160 || name.length >= 50) {
           req.flash('error_messages', '字數超出上限！')
           return res.redirect(`/users/${loginUserId}`)
         }

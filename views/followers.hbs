@@ -1,5 +1,4 @@
-
-  {{> left}}
+{{> left}}
 <div class="col-6 d2">
   <div class="row row-cols-1 row-cols-md-1">
     {{!-- logo --}}
@@ -12,7 +11,8 @@
           <div style="margin-left:20px;width: 639px;">
             <p class="profilepagetitle_title" style=" top:0px ;">
               {{ user.name }}
-            <P style="font-weight: 500;font-size: 13px;line-height: 19px;margin-top:-10px">{{ user.Tweets.length }} 推文
+            <P style="font-weight: 500;font-size: 13px;line-height: 19px;margin-top:-10px">{{currentUser.Tweets.length}}
+              推文
             </P>
             </p>
           </div>
@@ -30,7 +30,7 @@
       <div class="row row-cols-1 row-cols-md-1">
         <div class="col">
           <div class="tweet_card">
-            <div class="popular_imgbody" >
+            <div class="popular_imgbody">
               <a href="/users/{{this.id}}">
                 <img src="{{ this.avatar }}" class="popular_img" alt="...">
               </a>
@@ -79,5 +79,4 @@
 </div>
 
 
-  {{> right topUsers=topUsers}}
-
+{{> right topUsers=topUsers}}

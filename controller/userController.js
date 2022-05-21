@@ -4,6 +4,7 @@ const helpers = require('../_helpers')
 const imgur = require('imgur')
 const IMGUR_CLIENT_ID = process.env.IMGUR_CLIENT_ID
 imgur.setClientId(IMGUR_CLIENT_ID)
+const { Op } = require('sequelize')
 
 const userController = {
   signUpPage: async (req, res) => {
@@ -169,7 +170,13 @@ const userController = {
               {
                 model: Tweet,
                 include: [
-                  { model: User, attributes: ['id', 'name', 'account', 'avatar'] },
+                  {
+                    model: User,
+                    attributes: ['id', 'name', 'account', 'avatar'],
+                    where: {
+                      isAdmin: false
+                    }
+                  },
                   { model: Reply, attributes: ['id'] },
                   { model: User, as: 'LikedBy' }
                 ]
@@ -183,6 +190,8 @@ const userController = {
         order: [[Like, 'createdAt', 'DESC']]
       })
       if (!user) throw new Error("user didn't exist!")
+      const tweets = user.toJSON().Likes.filter(r => r.Tweet)
+      console.log('tweets', tweets)
       const isFollowed =
         helpers.getUser(req) &&
         helpers.getUser(req).Followings &&
@@ -213,7 +222,7 @@ const userController = {
 
       return res.render('likes', {
         user: user.toJSON(),
-        tweets: user.toJSON().Likes,
+        tweets,
         isFollowed,
         topUsers,
         page: 'user'
@@ -249,22 +258,21 @@ const userController = {
                 include: [
                   {
                     model: User,
-                    attributes: ['id', 'account']
+                    attributes: ['id', 'account'],
+                    where: {
+                      isAdmin: false
+                    }
                   }
                 ]
               }
             ]
-          },
-          {
-            model: Tweet,
-            attributes: ['id', 'description', 'createdAt'],
-            order: ['createdAt', 'ASC']
           },
           { model: User, as: 'Followings', attributes: ['id'] },
           { model: User, as: 'Followers', attributes: ['id'] }
         ],
         order: [[Reply, 'createdAt', 'DESC']]
       })
+      const replies = user.toJSON().Replies.filter(r => r.Tweet)
       if (!user) throw new Error("user didn't exist!")
       const isFollowed =
         helpers.getUser(req) &&
@@ -295,6 +303,7 @@ const userController = {
         .slice(0, 10)
       return res.render('replies', {
         user: user.toJSON(),
+        replies,
         isFollowed,
         topUsers,
         page: 'user'

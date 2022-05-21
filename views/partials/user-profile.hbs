@@ -64,12 +64,11 @@ height: 610px;border-radius: 20px;">
                     <button class=" btn tweet_btn" type="submit"
                       style='width:70px; background-color: #FF6600;border-radius:100px; color:white; font-weight:bold; font-size:18px; right: 15px; bottom:15px;margin-top:-120px'>儲存</button>
                     <div class="form-group">
-                      {{!-- TODO:是否要做上傳的圖片預覽? --}}
 
                       {{!-- cover 背景上傳 --}}
                       <div class="form-row mb-3">
                         <img class="card-img-top edit_cover"
-                          style="width:630px; border-radius: 0%;margin-left:-14px; height: 200px;margin-top:-44px ;position:relative"
+                          style="width:630px; border-radius: 0%;margin-left:-14px; height: 200px;margin-top:-44px ;position:relative" id="coverImg"
                           src="{{ user.cover }}" alt="{{ user.name }}">
                         <label class="form-label" for="cover">
                           <img style='position: absolute;left:262px; top:80px; z-index:3;width:35px '
@@ -94,7 +93,7 @@ height: 610px;border-radius: 20px;">
                       {{!-- avatar 頭像 --}}
                       <div class="form-row mb-3">
                         <img src="{{ user.avatar }}" class="border-avatar"
-                          style="border-radius: 50%; height: 100px; width: 100px;position:relative;margin-left:-255px ;margin-top:-255px"
+                          style="border-radius: 50%; height: 100px; width: 100px;position:relative;margin-left:-255px ;margin-top:-255px" id="avatarImg"
                           alt="{{ user.name }}">
                         <label class="form-label" for="avatar">
                           <img style='position: absolute; left:45px; top:200px;margin-top:-22px; z-index:3;width:35px'

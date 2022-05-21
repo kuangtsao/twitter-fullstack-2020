@@ -111,7 +111,7 @@ height: 610px;border-radius: 20px;">
                         value="{{ user.name }}" maxlength="50" required>
                     </div>
                     <p id="namecount" style="margin-left: 90%; color: #696974;"  > 
-                      <span id="textnamecount" style="color: #696974;"></span> /50
+                      <span id="textnamecount" style="color: #696974;">{{ user.name.length }}</span> /50
                     </p>
                     {{!-- 自我介紹 --}}
                     <div class="form-row mb-3">
@@ -121,7 +121,7 @@ height: 610px;border-radius: 20px;">
                     </div>
                     
                     <p id="count" style="margin-left: 90%; color: #696974;" > 
-                      <span id="textcount" style="color: #696974;"></span> /160
+                      <span id="textcount" style="color: #696974;">{{ user.introduction.length }}</span> /160
                     </p>
                     {{!-- <button class="btn btn-block mt-4"
                       style="border-radius: 50px; background-color:#FF6600; color: white; width:356px; height: 46px;padding: 8px 24px;"

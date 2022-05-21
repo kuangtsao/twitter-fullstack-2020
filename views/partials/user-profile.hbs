@@ -37,17 +37,14 @@ height: 200px; " src="{{ user.cover }}" alt="{{ user.name }}">
             <button type="submit">編輯個人資料</button>
           </form> --}}
 
-          <div class="d-flex d-inline gap-1">
-            <img style="margin-left:-85px ;" src="/images/訊息鈕.svg" alt="">
 
-            <img src="/images/鈴鐺.svg" alt="">
 
-            <!-- Button trigger modal -->
-            <button type="button" class="btn profile_btn" data-bs-toggle="modal" data-bs-target="#staticBackdrop"
-              style="">
-              編輯個人資料
-            </button>
-          </div>
+          <!-- Button trigger modal -->
+          <button type="button" class="btn profile_btn" data-bs-toggle="modal" data-bs-target="#staticBackdrop"
+            style="">
+            編輯個人資料
+          </button>
+
 
 
           <!-- Modal -->
@@ -148,11 +145,7 @@ height: 610px;border-radius: 20px;">
           {{else}}
           {{!-- 不是本人，顯示追蹤判斷按鈕 --}}
           {{!-- isFollowed 判斷 --}}
-          <div class="d-flex d-inline gap-1">
-            <img style="margin-left:-85px ;" src="/images/訊息鈕.svg" alt="">
 
-            <img src="/images/鈴鐺.svg" alt="">
-          
           {{#if isFollowed}}
           <form action="/followships/{{user.id}}?_method=DELETE" method="POST" style="display: contents;">
             <button type="submit" class="btn profilefollowing_btn">取消追蹤</button>
@@ -163,8 +156,8 @@ height: 610px;border-radius: 20px;">
           </form>
           {{/if}}
           {{/ifCond}}
-          </div>
         </div>
+
 
         <div class="card-body" style="margin-top: -20px;">
 

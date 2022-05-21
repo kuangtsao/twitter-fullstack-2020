@@ -4,7 +4,6 @@ const helpers = require('../_helpers')
 const imgur = require('imgur')
 const IMGUR_CLIENT_ID = process.env.IMGUR_CLIENT_ID
 imgur.setClientId(IMGUR_CLIENT_ID)
-const { Op } = require('sequelize')
 
 const userController = {
   signUpPage: async (req, res) => {

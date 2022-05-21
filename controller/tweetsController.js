@@ -8,7 +8,13 @@ const tweetsController = {
       const tweetList = await Tweet.findAll({
         order: [['createdAt', 'DESC']],
         include: [
-          { model: User, attributes: ['name', 'account', 'avatar'] },
+          {
+            model: User,
+            attributes: ['name', 'account', 'avatar'],
+            where: {
+              isAdmin: false
+            }
+          },
           { model: User, as: 'LikedBy' },
           { model: Reply, attributes: ['id'] },
           { model: Like, attributes: ['id'] }

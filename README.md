@@ -75,6 +75,7 @@ create database ac_twitter_workspace_test;
 6. 注入種子資料
 請先確認是否還在 clone 下來的路徑
 ```
+[project path] $ npx sequelize db:
 [project path] $ npx sequelize db:seed:all
 ```
 ## 啟動專案

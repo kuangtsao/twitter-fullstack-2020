@@ -14,6 +14,9 @@ if (process.env.NODE_ENV !== 'production') {
 }
 
 const app = express()
+const server = require('http').createServer(app)
+const io = require('socket.io')(server)
+
 const port = process.env.PORT || 3000
 const SESSION_SECRET = process.env.SESSION_SECRET
 
@@ -44,6 +47,30 @@ app.use((req, res, next) => {
 })
 
 app.use(routes)
-app.listen(port, () => console.log(`alphitter listening on port ${port}!`))
+
+io.on('connection', socket => {
+  console.log('連接成功 上線ID: ', socket.id)
+
+  // 監聽訊息
+  // socket.on('getMessage', message => {
+  //   console.log('服務端 接收 訊息: ', message)
+
+  // 監聽 sendMessage message, 傳送 message 給客戶端
+  socket.on('sendMessage', function (message) {
+    console.log('client端傳送 訊息: ', message)
+    // 當收到事件的時候，也發送一個 "allMessage" 事件給所有的連線用戶
+    io.emit('allMessage', { message: '伺服器回傳訊息' })
+  })
+
+  // 連接斷開
+  socket.on('disconnect', () => {
+    console.log('有人離開了！， 下線ID: ', socket.id)
+  })
+})
+
+// app.listen(port, () => console.log(`app listening on port ${port}!`))
+server.listen(port, () => {
+  console.log(`app is on http://localhost:${port}`)
+})
 
 module.exports = app

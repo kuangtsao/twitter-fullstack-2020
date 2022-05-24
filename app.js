@@ -48,18 +48,33 @@ app.use((req, res, next) => {
 
 app.use(routes)
 
+const messages = [
+  { name: 'JohnDou', message: 'Welcome!' },
+  { name: 'meeeee', message: 'history' }
+]
+
 io.on('connection', socket => {
-  console.log('連接成功 上線ID: ', socket.id)
+  console.log('user connected 上線ID: ', socket.id)
+
+  // 發送目前儲存已經發過的所有歷史訊息
+  io.emit('allMessage', messages)
 
   // 監聽訊息
   // socket.on('getMessage', message => {
   //   console.log('服務端 接收 訊息: ', message)
 
-  // 監聽 sendMessage message, 傳送 message 給客戶端
+  // 監聽 sendMessage message, 存起來 再傳送 message 給所有客戶端
   socket.on('sendMessage', function (message) {
-    console.log('client端傳送 訊息: ', message)
-    // 當收到事件的時候，也發送一個 "allMessage" 事件給所有的連線用戶
-    io.emit('allMessage', { message: '伺服器回傳訊息' })
+    console.log('client端傳來 訊息: ', message)
+    messages.push(message)
+    
+    // 當收到事件的時候，發送一個 "newMessage" 事件給所有的連線用戶
+    io.emit('newMessage', { message })
+  })
+
+    socket.on('chat message', (message) => {
+    console.log('chat message:' + message)
+    messages.push(message)
   })
 
   // 連接斷開

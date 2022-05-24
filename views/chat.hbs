@@ -55,16 +55,19 @@
         <p >下午 2:16</p>
       </div>
 {{!-- 離線框 --}}
-    <div class="login" style="margin: 10px auto; width: 30%; height:30px;  background: rgb(185, 177, 177); border-radius: 25px;">
+    <div class="logout" style="margin: 10px auto; width: 30%; height:30px;  background: rgb(185, 177, 177); border-radius: 25px;">
       <p style="text-align: center;">Mary Jane 離線</p>
     </div>
 
   </div>  
 </section>
+
 <section class="input-section" style="margin: 10px 0px; outline: 4px solid tomato;">
-  <form action="" method="GET" >
+
+{{!-- 送出訊息 --}}
+  <form id="form" action="" method="GET" >
     <label for="input" style="width: 80%;" rows="3" cols="100">
-      <input  type="text"  style="width: 100%;">
+      <input id="input" type="text"  style="width: 100%;">
     </label>
     <button type="submit">送出</button>
   </form>
@@ -76,17 +79,42 @@
 {{!-- socket 載入相關設定 --}}
   <script src="/socket.io/socket.io.js"></script>
   <script>
+    const data = {
+      message: []
+    }
     {{!-- 建立與 server 的連線  --}}
     var socket = io()
+
+    {{!-- 監聽來自 server 的 "allMessage" 事件，輸出所有歷史訊息 --}}
+    socket.on("allMessage", function(message){
+      console.log('client端接收所有歷史訊息: ', message)  
+      data.message = message
+    })
+
+    {{!-- 設定接收新訊息的監聽器 --}}
+    socket.on('newMessage', function(message){
+      console.log('接收新訊息', message)
+      data.message.push(message)
+    })
 
     {{!-- 發送一個 "sendMessage" 事件 --}}
     socket.emit("sendMessage", {
       name: "屬性是name",
       message: "這是從瀏覽器傳送出去的訊息"
     })
+    console.log('data', data)
 
-    {{!-- 監聽來自 server 的 "allMessage" 事件 --}}
-    socket.on("allMessage", function(message){
-      console.log('client端接收訊息: ', message)  
-    })
+    const form = document.getElementById('form')
+    const input = document.getElementById('input')
+
+    {{!-- 監聽送出按鈕 --}}
+    form.addEventListener('submit', function(e) {
+      e.preventDefault()
+      if (input.value.trim() !== 0) {
+        socket.emit('chat message', input.value)
+        input.value = ''
+      }
+  })
+
+
   </script>

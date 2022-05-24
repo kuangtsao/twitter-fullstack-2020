@@ -1,20 +1,20 @@
 <nav><h1 style="text-align: center">聊天室</h1></nav>    
 <section class="message-section" style="outline: 4px solid tomato; ">
   <p>Content: </p>
-  <div id="all" style="width: 100%; min-height: 500px; outline: 0px solid rgb(160, 241, 164)">
-    <ul style="list-style-type: none;">
-      <li >
+  <div style="width: 100%; min-height: 500px; outline: 0px solid rgb(160, 241, 164)">
+    <ul id="all" style="list-style-type: none;">
+      <li > {{!-- 登入框 --}}
         <div class="login" style="margin: 10px auto; width: 30%; height:30px;  background: rgb(185, 177, 177);border-radius: 25px; ">
         <p style="text-align: center;">John Doe 上線</p>
     </div>
       </li>
-      <li>
+      <li> 
         <div class="login" style="margin: 10px auto; width: 30%; height:30px;  background: rgb(185, 177, 177);border-radius: 25px;">
         <p style="text-align: center;">Mary Jane 上線</p>
     </div>
       </li>
-      <li>
-        <div class="row message" style="margin: 10px 0 ; width: 50%; height:auto;  background: rgb(175, 236, 175); border-radius: 25px; " >
+      <li>{{!-- 別人的對話框  --}}
+        <div class="row left" style="margin: 10px 0 ; width: 50%; height:auto;  background: rgb(175, 236, 175); border-radius: 25px; " >
         <div class="col-2" >
           <img src="/images/使用者.svg" style="max-width:100%; max-height:100%;" alt="" >
         </div>
@@ -24,8 +24,8 @@
         <p >上午 9:11</p>
       </div>
       </li>
-      <li>
-        <div class="row message" style="margin: 10px 50% ; width: 50%; height:auto;  background: rgb(236, 175, 175); border-radius: 25px;" >
+      <li>{{!-- 自己的對話框 --}}
+        <div class="row right" style="margin: 10px 50% ; width: 50%; height:auto;  background: rgb(236, 175, 175); border-radius: 25px;" >
         <div class="col-2" >
           <img src="/images/使用者.svg" style="max-width:100%; max-height:100%;" alt="" >
         </div>
@@ -35,8 +35,8 @@
         <p >下午 6:6</p>
       </div>
       </li>
-      <li>
-        <div class="row message" style="margin: 10px 0 ; width: 50%; height:auto;  background: rgb(175, 236, 175); border-radius: 25px;" >
+      <li>{{!-- 別人的對話框  --}}
+        <div class="row left" style="margin: 10px 0 ; width: 50%; height:auto;  background: rgb(175, 236, 175); border-radius: 25px;" >
         <div class="col-2" >
           <img src="/images/使用者.svg" style="max-width:100%; max-height:100%;" alt="" >
         </div>
@@ -46,8 +46,8 @@
         <p >下午 11:11</p>
       </div>
       </li>
-      <li>
-              <div class="row message" style="margin: 10px 50% ; width: 50%; height:auto;  background: rgb(236, 175, 175); border-radius: 25px;" >
+      <li>{{!-- 自己的對話框 --}}
+              <div class="row right" style="margin: 10px 50% ; width: 50%; height:auto;  background: rgb(236, 175, 175); border-radius: 25px;" >
         <div class="col-2" >
           <img src="/images/使用者.svg" style="max-width:100%; max-height:100%;" alt="" >
         </div>
@@ -57,29 +57,12 @@
         <p >下午 2:16</p>
       </div>
       </li>
-      <li>
+      <li>{{!-- 離線框 --}}
             <div class="logout" style="margin: 10px auto; width: 30%; height:30px;  background: rgb(185, 177, 177); border-radius: 25px;">
       <p style="text-align: center;">Mary Jane 離線</p>
     </div>
       </li>
     </ul>
-    {{!-- 登入框 --}}
- 
-    
-    
-    {{!-- 別人的對話框  --}}
-      
-
-      {{!-- 自己的對話框 --}}
-      
-
-      {{!-- 別人的對話框  --}}
-      
-
-      {{!-- 自己的對話框 --}}
-
-      {{!-- 離線框 --}}
-
 
   </div>  
 </section>
@@ -91,7 +74,7 @@
     <label for="input" style="width: 80%;" rows="3" cols="100">
       <input id="input" type="text"  style="width: 100%;">
     </label>
-    <button type="submit">送出</button>
+    <button id="submit" type="submit">送出</button>
   </form>
 </section>
 

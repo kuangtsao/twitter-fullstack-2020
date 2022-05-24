@@ -2,17 +2,19 @@
 <section class="message-section" style="outline: 4px solid tomato; ">
   <p>Content: </p>
   <div id="all" style="width: 100%; min-height: 500px; outline: 0px solid rgb(160, 241, 164)">
-
-    {{!-- 登入框 --}}
-    <div class="login" style="margin: 10px auto; width: 30%; height:30px;  background: rgb(185, 177, 177);border-radius: 25px;">
-      <p style="text-align: center;">John Doe 上線</p>
+    <ul style="list-style-type: none;">
+      <li >
+        <div class="login" style="margin: 10px auto; width: 30%; height:30px;  background: rgb(185, 177, 177);border-radius: 25px; ">
+        <p style="text-align: center;">John Doe 上線</p>
     </div>
-    <div class="login" style="margin: 10px auto; width: 30%; height:30px;  background: rgb(185, 177, 177);border-radius: 25px;">
-      <p style="text-align: center;">Mary Jane 上線</p>
+      </li>
+      <li>
+        <div class="login" style="margin: 10px auto; width: 30%; height:30px;  background: rgb(185, 177, 177);border-radius: 25px;">
+        <p style="text-align: center;">Mary Jane 上線</p>
     </div>
-    
-    {{!-- 別人的對話框  --}}
-      <div class="row message" style="margin: 10px 0 ; width: 50%; height:auto;  background: rgb(175, 236, 175); border-radius: 25px; " >
+      </li>
+      <li>
+        <div class="row message" style="margin: 10px 0 ; width: 50%; height:auto;  background: rgb(175, 236, 175); border-radius: 25px; " >
         <div class="col-2" >
           <img src="/images/使用者.svg" style="max-width:100%; max-height:100%;" alt="" >
         </div>
@@ -21,9 +23,9 @@
         </div>
         <p >上午 9:11</p>
       </div>
-
-      {{!-- 自己的對話框 --}}
-      <div class="row message" style="margin: 10px 50% ; width: 50%; height:auto;  background: rgb(236, 175, 175); border-radius: 25px;" >
+      </li>
+      <li>
+        <div class="row message" style="margin: 10px 50% ; width: 50%; height:auto;  background: rgb(236, 175, 175); border-radius: 25px;" >
         <div class="col-2" >
           <img src="/images/使用者.svg" style="max-width:100%; max-height:100%;" alt="" >
         </div>
@@ -32,9 +34,9 @@
         </div>
         <p >下午 6:6</p>
       </div>
-
-      {{!-- 別人的對話框  --}}
-      <div class="row message" style="margin: 10px 0 ; width: 50%; height:auto;  background: rgb(175, 236, 175); border-radius: 25px;" >
+      </li>
+      <li>
+        <div class="row message" style="margin: 10px 0 ; width: 50%; height:auto;  background: rgb(175, 236, 175); border-radius: 25px;" >
         <div class="col-2" >
           <img src="/images/使用者.svg" style="max-width:100%; max-height:100%;" alt="" >
         </div>
@@ -43,9 +45,9 @@
         </div>
         <p >下午 11:11</p>
       </div>
-
-      {{!-- 自己的對話框 --}}
-      <div class="row message" style="margin: 10px 50% ; width: 50%; height:auto;  background: rgb(236, 175, 175); border-radius: 25px;" >
+      </li>
+      <li>
+              <div class="row message" style="margin: 10px 50% ; width: 50%; height:auto;  background: rgb(236, 175, 175); border-radius: 25px;" >
         <div class="col-2" >
           <img src="/images/使用者.svg" style="max-width:100%; max-height:100%;" alt="" >
         </div>
@@ -54,10 +56,30 @@
         </div>
         <p >下午 2:16</p>
       </div>
-{{!-- 離線框 --}}
-    <div class="logout" style="margin: 10px auto; width: 30%; height:30px;  background: rgb(185, 177, 177); border-radius: 25px;">
+      </li>
+      <li>
+            <div class="logout" style="margin: 10px auto; width: 30%; height:30px;  background: rgb(185, 177, 177); border-radius: 25px;">
       <p style="text-align: center;">Mary Jane 離線</p>
     </div>
+      </li>
+    </ul>
+    {{!-- 登入框 --}}
+ 
+    
+    
+    {{!-- 別人的對話框  --}}
+      
+
+      {{!-- 自己的對話框 --}}
+      
+
+      {{!-- 別人的對話框  --}}
+      
+
+      {{!-- 自己的對話框 --}}
+
+      {{!-- 離線框 --}}
+
 
   </div>  
 </section>
@@ -97,12 +119,11 @@
       data.message.push(message)
     })
 
-    {{!-- 發送一個 "sendMessage" 事件 --}}
+    {{!-- 發送一個 "sendMessage" 事件
     socket.emit("sendMessage", {
       name: "屬性是name",
       message: "這是從瀏覽器傳送出去的訊息"
-    })
-    console.log('data', data)
+    }) --}}
 
     const form = document.getElementById('form')
     const input = document.getElementById('input')
@@ -111,7 +132,8 @@
     form.addEventListener('submit', function(e) {
       e.preventDefault()
       if (input.value.trim() !== 0) {
-        socket.emit('chat message', input.value)
+        socket.emit('sendMessage', input.value)
+        console.log('input.value', input.value)
         input.value = ''
       }
   })

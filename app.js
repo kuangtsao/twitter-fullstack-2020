@@ -65,18 +65,12 @@ io.on('connection', socket => {
 
   // 監聽 sendMessage message, 存起來 再傳送 message 給所有客戶端
   socket.on('sendMessage', function (message) {
-    console.log('client端傳來 訊息: ', message)
+    console.log('client端傳來 sendMessage 訊息: ', message)
     messages.push(message)
-    
     // 當收到事件的時候，發送一個 "newMessage" 事件給所有的連線用戶
     io.emit('newMessage', { message })
   })
-
-    socket.on('chat message', (message) => {
-    console.log('chat message:' + message)
-    messages.push(message)
-  })
-
+    
   // 連接斷開
   socket.on('disconnect', () => {
     console.log('有人離開了！， 下線ID: ', socket.id)

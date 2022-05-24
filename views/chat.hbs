@@ -1,0 +1,50 @@
+<nav><h1 style="text-align: center">聊天室</h1></nav>    
+<section class="message-section" style="outline: 4px solid tomato; ">
+  <p>Content: </p>
+  <div id="all" style="width: 100%; height: 500px; outline: 4px solid rgb(160, 241, 164)">
+
+    {{!-- 登入框 --}}
+    <div class="login" style="margin: 10px auto; width: 30%; height:30px;  background: rgb(185, 177, 177);outline: 1px solid rgb(0, 0, 0)">
+      <p style="text-align: center;">John Doe 上線</p>
+    </div>
+    <div class="login" style="margin: 10px auto; width: 30%; height:30px;  background: rgb(185, 177, 177);outline: 1px solid rgb(0, 0, 0)">
+      <p style="text-align: center;">Mary Jane 上線</p>
+    </div>
+    
+    {{!-- 對話框  --}}
+    <div class="message" style="margin: 10px auto; width: 30%; height:30px;  background: rgb(185, 177, 177);outline: 1px solid rgb(0, 0, 0)">
+      <p style="text-align: center;">Mary Jane 上線</p>
+    </div>
+
+
+  </div>  
+</section>
+<section class="input-section" style="margin: 10px 0px; outline: 4px solid tomato;">
+  <form action="" method="GET" >
+    <label for="input" style="width: 80%;" rows="3" cols="100">
+      <input  type="text"  style="width: 100%;">
+    </label>
+    <button type="submit">送出</button>
+  </form>
+</section>
+
+
+
+
+{{!-- socket 載入相關設定 --}}
+  <script src="/socket.io/socket.io.js"></script>
+  <script>
+    {{!-- 建立與 server 的連線  --}}
+    var socket = io()
+
+    {{!-- 發送一個 "sendMessage" 事件 --}}
+    socket.emit("sendMessage", {
+      name: "屬性是name",
+      message: "這是從瀏覽器傳送出去的訊息"
+    })
+
+    {{!-- 監聽來自 server 的 "allMessage" 事件 --}}
+    socket.on("allMessage", function(message){
+      console.log('client端接收訊息: ', message)  
+    })
+  </script>

@@ -8,14 +8,13 @@ const methodOverride = require('method-override')
 const session = require('express-session')
 const passport = require('./config/passport')
 const routes = require('./routes')
+const socket = require('socket.io')
 
 if (process.env.NODE_ENV !== 'production') {
   require('dotenv').config()
 }
 
 const app = express()
-const server = require('http').createServer(app)
-const io = require('socket.io')(server)
 
 const port = process.env.PORT || 3000
 const SESSION_SECRET = process.env.SESSION_SECRET
@@ -28,7 +27,9 @@ app.set('view engine', 'hbs')
 
 app.use(express.urlencoded({ extended: true }))
 
-app.use(session({ secret: SESSION_SECRET, resave: false, saveUninitialized: false }))
+app.use(
+  session({ secret: SESSION_SECRET, resave: false, saveUninitialized: false })
+)
 app.use(passport.initialize())
 app.use(passport.session())
 
@@ -47,39 +48,22 @@ app.use((req, res, next) => {
 })
 
 app.use(routes)
+// app.listen(port, () => console.log(`app listening on port ${port}!`))
 
-const messages = [
-  { name: 'JohnDou', message: 'Welcome!' },
-  { name: 'meeeee', message: 'history' }
-]
+const sever = app.listen(port, () =>
+  console.log(`Example app listening on port ${port}!`)
+)
+const io = socket(sever)
 
 io.on('connection', socket => {
-  console.log('user connected 上線ID: ', socket.id)
-
-  // 發送目前儲存已經發過的所有歷史訊息
-  io.emit('allMessage', messages)
-
-  // 監聽訊息
-  // socket.on('getMessage', message => {
-  //   console.log('服務端 接收 訊息: ', message)
-
-  // 監聽 sendMessage message, 存起來 再傳送 message 給所有客戶端
-  socket.on('sendMessage', function (message) {
-    console.log('client端傳來 sendMessage 訊息: ', message)
-    messages.push(message)
-    // 當收到事件的時候，發送一個 "newMessage" 事件給所有的連線用戶
-    io.emit('newMessage', { message })
+  console.log('a user connected')
+  socket.on('chat message', msg => {
+    console.log('msg')
+    io.emit('chat message', msg)
   })
-    
-  // 連接斷開
   socket.on('disconnect', () => {
-    console.log('有人離開了！， 下線ID: ', socket.id)
+    console.log('user disconnected')
   })
-})
-
-// app.listen(port, () => console.log(`app listening on port ${port}!`))
-server.listen(port, () => {
-  console.log(`app is on http://localhost:${port}`)
 })
 
 module.exports = app

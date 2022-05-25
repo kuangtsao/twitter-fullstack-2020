@@ -4,7 +4,7 @@ const helpers = require('../_helpers')
 const chatController = {
   test: async (req, res, next) => {
     try {
-      return res.render('chat')
+      return res.render('chat', { page: 'chat' })
     } catch (err) {
       next(err)
     }

@@ -31,6 +31,27 @@
           </div>
         </div>
       </div>
+            {{!-- 公開聊天室 --}}
+            <div class="col">
+              <div class="card left_nav_card" style="order: 0;">
+                <div class="card-body left_cardbody">
+                  <a href='/chat' style='text-decoration: none;'>
+                    <div class="left_navimg">
+                      {{#ifCond page 'chat'}}
+                      <p class='navCol-btn-active'>
+                        <img class="left_navlogo" src="/images/被點擊公開聊天室.svg" alt="">
+                        {{else}}
+                      <p class="navCol-btn">
+                        <img class="left_navlogo" src="/images/公開聊天室.svg" alt="">
+                        {{/ifCond}}
+                    </div>
+                    <p class='left_navtitle'>
+                      公開聊天室
+                    </p>
+                  </a>
+                </div>
+              </div>
+            </div>
       {{!-- 個人資料 --}}
       <div class="col">
         <div class="card left_nav_card" style="order: 1;">

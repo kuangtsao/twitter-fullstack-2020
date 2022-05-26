@@ -1,122 +1,134 @@
-{{> left}}
+<div style="margin-left: -100px; position:absolute">
+  {{> left}}
+</div>
 
-<div class="col-6" style="position:absolute; left:420px">
-  <div class="row row-cols-1 row-cols-md-1">
-    {{!-- 上線使用者 --}}
-    <div class="col">
-      <div class="card pagetitle_card" style="width: 416px;border: #E6ECF0 1px solid;">
-        <div class="card-body">
-          <p style="width:300px ; ;font-weight: 700;font-size: 24px;line-height: 26px;">
-            上線使用者 (5)
-          </p>
-        </div>
-      </div>
-    </div>
+{{!-- 上線使用者 --}}
+<div class="col" style="margin-left: 200px;">
+  <div class="card">
+    <ul class="list-group ">
+      <li class="list-group-item">
+        上線使用者(<span id="onlineCount">0</span>)
+      </li>
+      <p id="id" class="d-none">{{user.id}}</p>
+      <p id="avatar" class="d-none">{{user.avatar}}</p>
+      <h5 id='name' class="d-none">{{user.name}}</h5>
+    </ul>
+    <ul id="publicPeople" class="list-group overflow-auto">
+      <li class="list-group-item">
+        <div id="onlinePeople">
+          {{!-- 第一個上線者 --}}
 
-
-    {{!-- 上線使用者列 --}}
-    <div class="col-6" style="width: 416px;margin-top: 52px;">
-      {{!-- 人員1 --}}
-      <div class="card popular_card"
-        style="width: 416px;border-radius: 0%;border: #E6ECF0 1px solid; margin-top:-1px; margin-left:-1px">
-        <div class="popular_imgbody">
-          <a href="/users/{{this.UserId}}/tweets">
-            <img src="https://picsum.photos/200/300?random=58.72222733877057" class="popular_img" alt="...">
-          </a>
-        </div>
-        <div class="card-body tweet_cardbody">
-          <div class="tweet_title">
-            <a href="/users/{{this.UserId}}/tweets" style="text-decoration: none; ">
-              <p class="tweet_name">aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa</p>
-            </a>
-            <p class="tweet_acount" style="width: 100px;">
-              @aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
-            </p>
-          </div>
-        </div>
-      </div>
-      {{!-- 人員2 --}}
-      <div class="card popular_card"
-        style="width: 416px;border-radius: 0%;border: #E6ECF0 1px solid; margin-top:-1px; margin-left:-1px">
-        <div class="popular_imgbody">
-          <a href="/users/{{this.UserId}}/tweets">
-            <img src="https://picsum.photos/200/300?random=23.334051375030683" class="popular_img" alt="...">
-          </a>
-        </div>
-        <div class="card-body tweet_cardbody">
-          <div class="tweet_title">
-            <a href="/users/{{this.UserId}}/tweets" style="text-decoration: none; ">
-              <p class="tweet_name">aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa</p>
-            </a>
-            <p class="tweet_acount" style="width: 100px;">
-              @aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
-            </p>
-          </div>
-        </div>
-      </div>
-    </div>
-
-
-    {{!-- 公開聊天室 --}}
-    <div class="col" style="position:fixed">
-      <div class="card pagetitle_card" style="width: 713px; left:416px; border: #E6ECF0 1px solid;">
-        <div class="card-body">
-          <p style="width:300px ; font-weight: 700;font-size: 24px;line-height: 26px;">
-            公開聊天室
-          </p>
-        </div>
-        <div class="card-body" style="margin-top:-21px;margin-left:1px">
-          {{!-- output --}}
-          <div class="public-chatroom-content"
-            style="border: #E6ECF0 1px solid;width: 713px;; margin-left:-17px;margin-top:-15px">
-            <ul id="messages">
-            </ul>
-          </div>
-
-          {{!-- input --}}
-          <form action="" id="form">
-            <div class="public-chatroom-typing d-flex justify-content-between"
-              style="border: #E6ECF0 1px solid;width: 713px; margin-left:-17px;height: 64px;">
-              <label for="msg">
-                <input id="input"
-                  style="border:none;outline:medium;width: 641px; margin-top:15px;height: 32px;margin-left:20px; background: #E6ECF0;border: 1px solid #E6ECF0;border-radius: 50px;"
-                  id="input" autocomplete="off" />
-              </label>
-              <div class="submit-section">
-                <button type="submit" class="btn" style="margin-top:12px">
-                  <img src="/images/送出鍵.svg" alt="">
-                </button>
-              </div>
+          <div class="row justify-content-start align-items-center px-2 py-1 rounded hovercard"
+            style="border: 1px solid rgba(0, 0, 0, 0.1); margin-bottom: 3px;" onclick="location.href='/users/{{id}}'">
+            <div class="col-2 d-flex justify-content-center align-items-center" id="onlineUsers">
+              <img src="https://picsum.photos/200/300?random=5.380306753463349" width="50" height="50"
+                class="rounded-circle">
             </div>
-          </form>
+            <div class="col-6 d-flex" style="height: 60px;">
+              <h5 style="line-height: 60px; font-size: 15px; font-weight: bold;">name</h5>
+              <p class="text-muted ps-2" style="font-size: 15px; line-height: 60px; font-weight: 500; color:#657786;">
+                @account</p>
+            </div>
+          </div>
+
+          {{!-- 第二個上線者 --}}
+          <div class="row justify-content-start align-items-center px-2 py-1 rounded hovercard"
+            style="border: 1px solid rgba(0, 0, 0, 0.1); margin-bottom: 3px;" onclick="location.href='/users/{{id}}'">
+            <div class="col-2 d-flex justify-content-center align-items-center" id="onlineUsers">
+              <img src="https://picsum.photos/200/300?random=58.72222733877057" width="50" height="50"
+                class="rounded-circle">
+            </div>
+
+            <div class="col-6 d-flex" style="height: 60px;">
+              <h5 style="line-height: 60px; font-size: 15px; font-weight: bold;">name</h5>
+              <p class="text-muted ps-2" style="font-size: 15px; line-height: 60px; font-weight: 500; color:#657786;">
+                @account</p>
+            </div>
+          </div>
+
         </div>
-
-
-      </div>
-    </div>
+      </li>
+    </ul>
   </div>
 </div>
 
+{{!-- 公開聊天室 --}}
+<div class='col'>
+  <div class="card">
+    <li class="list-group-item" style="font-weight: bold; font-size: 18px;">
+      公開聊天室
+    </li>
+    <ul id="publicboard" class="list-group overflow-auto">
+      <li class="list-group-item" style="border-bottom:none">
 
+        {{!-- output --}}
+        <div id='board' class="rounded-3">
+          <!--左邊訊息-->
+          <div class="d-flex row">
+            <div class="col-1 d-flex justify-content-center">
+              <a href="/users/{{id}}" class="p-1">
+                <img src="https://picsum.photos/200/300?random=23.334051375030683" class="rounded-circle"
+                  style="width: 40px; height: 40px" alt="avatar" />
+              </a>
+            </div>
+            <div class="col-11 pl-0 mt-3">
+              <div class="msgblockleft">
+                <p class="d-inline ">左邊訊息</p>
+              </div>
+              <p class="text-muted mx-0" style="font-size: 13px; padding-left: 1px; margin-top: 6px;line-height: 13px;">
+                下午4:21</p>
+            </div>
+          </div>
+          <!--左邊訊息-->
 
-
-
-
+          <!--右邊訊息-->
+          <div class=" d-flex flex-row-reverse">
+            <div class="col-3 flex-column">
+              <div class="msgblockright">
+                <p class="d-inline  ">
+                  右邊訊息</p>
+              </div>
+              <p class="text-muted mx-0 bd-highlight"
+                style="font-size: 0.675em; padding-left: 0.3rem; margin-top: 0.3rem;">
+                幾秒前</p>
+            </div>
+            <!--右邊訊息結束-->
+            <div id="messages"></div>
+          </div>
+        </div>
+      </li>
+    </ul>
+    {{!-- input --}}
+    <li class="list-group-item mr" id="msgInputBtn">
+      <div class="input-group">
+        <form id="form" action="" class="d-flex d-inline gap-3" style="width: 100%;">
+          <input id="input" autocomplete="off" class="form-control bg-light" placeholder="請輸入訊息..."
+            aria-label="msgInput" aria-describedby="basic-addon1"
+            style="width: 100%;background: #E6ECF0;border: 1px solid #E6ECF0;border-radius: 50px;">
+          <button class="btn btn-tomato ">
+            <img src="/images/送出鍵.svg" alt="">
+          </button>
+        </form>
+      </div>
+    </li>
+  </div>
+</div>
 <script src="/socket.io/socket.io.js"></script>
 <script>
-  var socket = io()
-  var form = document.getElementById('form')
-  var input = document.getElementById('input')
+  var socket = io();
+  var messages = document.getElementById('messages');
+  var form = document.getElementById('form');
+  var input = document.getElementById('input');
   form.addEventListener('submit', function (e) {
-    e.preventDefault()
+    e.preventDefault();
     if (input.value) {
       socket.emit('chat message', input.value);
-      input.value = ''
+      input.value = '';
     }
-  })
+  });
   socket.on('chat message', function (msg) {
-    var item = document.createElement('li')
+    var item = document.createElement('div');
     item.textContent = msg;
-    messages.appendChild(item)
-  })
+    messages.appendChild(item);
+  });
 </script>

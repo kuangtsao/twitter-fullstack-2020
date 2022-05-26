@@ -8,15 +8,18 @@ const methodOverride = require('method-override')
 const session = require('express-session')
 const passport = require('./config/passport')
 const routes = require('./routes')
-const socket = require('socket.io')
 
 if (process.env.NODE_ENV !== 'production') {
   require('dotenv').config()
 }
 
 const app = express()
-
 const port = process.env.PORT || 3000
+const http = require('http')
+const server = http.createServer(app)
+const { Server } = require('socket.io')
+const io = new Server(server)
+
 const SESSION_SECRET = process.env.SESSION_SECRET
 
 // use helpers.getUser(req) to replace req.user
@@ -50,19 +53,11 @@ app.use((req, res, next) => {
 app.use(routes)
 // app.listen(port, () => console.log(`app listening on port ${port}!`))
 
-const sever = app.listen(port, () =>
-  console.log(`Example app listening on port ${port}!`)
-)
-const io = socket(sever)
+server.listen(port, () => console.log(`app listening on port ${port}!`))
 
 io.on('connection', socket => {
-  console.log('a user connected')
   socket.on('chat message', msg => {
-    console.log('msg')
     io.emit('chat message', msg)
-  })
-  socket.on('disconnect', () => {
-    console.log('user disconnected')
   })
 })
 

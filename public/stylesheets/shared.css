@@ -57,3 +57,16 @@
 .nav-link-active {
   color: #ff6600;
 }
+
+.msgblockleft {
+  border-radius: 50rem 50rem 50rem 0;
+  background-color: #eee;
+  padding: 0.4rem 0.6rem;
+}
+
+.msgblockright {
+  border-radius: 50rem 50rem 0 50rem;
+  background-color: tomato;
+  color: white;
+  padding: 0.4rem 0.6rem;
+}

@@ -1,0 +1,125 @@
+<nav><h1 style="text-align: center">聊天室</h1></nav>    
+<section class="message-section" style="outline: 4px solid tomato; ">
+  <p>Content: </p>
+  <div style="width: 100%; min-height: 500px; outline: 0px solid rgb(160, 241, 164)">
+    <ul id="all" style="list-style-type: none;">
+      <li > {{!-- 登入框 --}}
+        <div class="login" style="margin: 10px auto; width: 30%; height:30px;  background: rgb(185, 177, 177);border-radius: 25px; ">
+        <p style="text-align: center;">John Doe 上線</p>
+    </div>
+      </li>
+      <li> 
+        <div class="login" style="margin: 10px auto; width: 30%; height:30px;  background: rgb(185, 177, 177);border-radius: 25px;">
+        <p style="text-align: center;">Mary Jane 上線</p>
+    </div>
+      </li>
+      <li>{{!-- 別人的對話框  --}}
+        <div class="row left" style="margin: 10px 0 ; width: 50%; height:auto;  background: rgb(175, 236, 175); border-radius: 25px; " >
+        <div class="col-2" >
+          <img src="/images/使用者.svg" style="max-width:100%; max-height:100%;" alt="" >
+        </div>
+        <div class="col-10" style="max-width:100%; max-height:100%;">
+          臣亮言：先帝創業未半，而中道崩殂。今天下三分，益. 州疲敝，此誠危急存亡之秋也！然侍衞之臣，不懈於內；
+        </div>
+        <p >上午 9:11</p>
+      </div>
+      </li>
+      <li>{{!-- 自己的對話框 --}}
+        <div class="row right" style="margin: 10px 50% ; width: 50%; height:auto;  background: rgb(236, 175, 175); border-radius: 25px;" >
+        <div class="col-2" >
+          <img src="/images/使用者.svg" style="max-width:100%; max-height:100%;" alt="" >
+        </div>
+        <div class="col-10" style="max-width:100%; max-height:100%;">
+          阿鬼你講中文
+        </div>
+        <p >下午 6:6</p>
+      </div>
+      </li>
+      <li>{{!-- 別人的對話框  --}}
+        <div class="row left" style="margin: 10px 0 ; width: 50%; height:auto;  background: rgb(175, 236, 175); border-radius: 25px;" >
+        <div class="col-2" >
+          <img src="/images/使用者.svg" style="max-width:100%; max-height:100%;" alt="" >
+        </div>
+        <div class="col-10" style="max-width:100%; max-height:100%;">
+          我家門前有小河~後面有山坡 
+        </div>
+        <p >下午 11:11</p>
+      </div>
+      </li>
+      <li>{{!-- 自己的對話框 --}}
+              <div class="row right" style="margin: 10px 50% ; width: 50%; height:auto;  background: rgb(236, 175, 175); border-radius: 25px;" >
+        <div class="col-2" >
+          <img src="/images/使用者.svg" style="max-width:100%; max-height:100%;" alt="" >
+        </div>
+        <div class="col-10" style="max-width:100%; max-height:100%;">
+          奧立佛爵士夫人費雯·麗（英語：Vivien Leigh, Lady Olivier，1913年11月5日－1967年7月8日），英國國寶級電影演員，兩屆奧斯卡影后。費雯·麗不但是出色的電影演員
+        </div>
+        <p >下午 2:16</p>
+      </div>
+      </li>
+      <li>{{!-- 離線框 --}}
+            <div class="logout" style="margin: 10px auto; width: 30%; height:30px;  background: rgb(185, 177, 177); border-radius: 25px;">
+      <p style="text-align: center;">Mary Jane 離線</p>
+    </div>
+      </li>
+    </ul>
+
+  </div>  
+</section>
+
+<section class="input-section" style="margin: 10px 0px; outline: 4px solid tomato;">
+
+{{!-- 送出訊息 --}}
+  <form id="form" action="" method="GET" >
+    <label for="input" style="width: 80%;" rows="3" cols="100">
+      <input id="input" type="text"  style="width: 100%;">
+    </label>
+    <button id="submit" type="submit">送出</button>
+  </form>
+</section>
+
+
+
+
+{{!-- socket 載入相關設定 --}}
+  <script src="/socket.io/socket.io.js"></script>
+  <script>
+    const data = {
+      message: []
+    }
+    {{!-- 建立與 server 的連線  --}}
+    var socket = io()
+
+    {{!-- 監聽來自 server 的 "allMessage" 事件，輸出所有歷史訊息 --}}
+    socket.on("allMessage", function(message){
+      console.log('client端接收所有歷史訊息: ', message)  
+      data.message = message
+    })
+
+    {{!-- 設定接收新訊息的監聽器 --}}
+    socket.on('newMessage', function(message){
+      console.log('接收新訊息', message)
+      data.message.push(message)
+    })
+
+    {{!-- 發送一個 "sendMessage" 事件
+    socket.emit("sendMessage", {
+      name: "屬性是name",
+      message: "這是從瀏覽器傳送出去的訊息"
+    }) --}}
+
+    const form = document.getElementById('form')
+    const input = document.getElementById('input')
+
+    {{!-- 監聽送出按鈕 --}}
+    form.addEventListener('submit', function(e) {
+      e.preventDefault()
+      if (input.value.trim() !== 0) {
+        socket.emit('sendMessage', input.value)
+        console.log('input.value', input.value)
+        input.value = ''
+      }
+  })
+
+
+  </script>

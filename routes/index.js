@@ -9,6 +9,10 @@ const userController = require('../controller/userController')
 const tweetController = require('../controller/tweetsController.js')
 const adminController = require('../controller/adminController.js')
 const apiController = require('../controller/apiController.js')
+const chatController = require('../controller/chatController.js')
+
+// chat
+router.get('/chat', chatController.test)
 
 // Admin
 router.get('/admin/signin', adminController.signinPage)
